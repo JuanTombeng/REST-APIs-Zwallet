@@ -3,12 +3,14 @@ const morgan = require('morgan');
 const app = express();
 const PORT = 4000;
 
-const usersRouter = require('./src/routes/users.js')
+const adminRouter = require('./src/routes/adminUsers.js')
+const customerRouter = require('./src/routes/customerUser.js')
 
 app.use(express.json());
 app.use(morgan('dev'))
 
-app.use('/users', usersRouter)
+app.use('/admin/users', adminRouter)
+app.use('/users', customerRouter)
 
 app.use((req, res, next) => {
     res.json({
