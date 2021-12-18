@@ -1,22 +1,40 @@
 const bcrypt = require('bcrypt')
+const { v4 : uuidv4 } = require('uuid')
 const userQuery = require('../models/customerUser.js')
 
 const userSignUp = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
         const {username, email, password} = req.body
+        const userId = uuidv4()
         const hashedPassword = await bcrypt.hash(password, salt)
-        const data = {
+        const userData = {
+            id : userId,
             username : username,
             email : email,
             password : hashedPassword
         }
-        const result = await userQuery.userSignUp(data)
+        const accountData = {
+            id : uuidv4(),
+            id_user : userId,
+            account_number : Math.floor(Math.random() * (11000 - 10000)) + 10000
+        }
+        // const contactData = {
+        //     id : 3,
+        //     id_user_holder : userId
+        // }
+        const result = await userQuery.userSignUp(userData)
+        const account = await userQuery.userAccountCreation(accountData)
+        // const contact = await userQuery.userContactHolder(contactData)
         res.json({
-            results: result
+            results: result,
+            accounts: account,
+            // contact : contact
         })
     } catch (error) {
-        new Error(error)
+        res.json({
+            errorMessage : error
+        })
     }
 }
 

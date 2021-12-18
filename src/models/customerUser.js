@@ -1,4 +1,3 @@
-const { reject } = require('bcrypt/promises')
 const connection = require('../config/dbConfig.js')
 
 const userSignUp = (data) => {
@@ -15,11 +14,32 @@ const userSignUp = (data) => {
 }
 
 // user account creation after new user sign up
-const userAccountCreation = () => {
+const userAccountCreation = (data) => {
     return new Promise ((resolve, reject) => {
         const sql = `INSERT INTO accounts SET ?`
+        connection.query(sql, data, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
     })
 }
+
+// // user contact holder creation after new user sign up
+// const userContactHolder = (userId) => {
+//     return new Promise ((resolve, reject) => {
+//         const sql = `INSERT INTO contact_holder SET ?`
+//         connection.query(sql, userId, (error, result) => {
+//             if (!error) {
+//                 resolve(result)
+//             } else {
+//                 reject(error)
+//             }
+//         })
+//     })
+// }
 
 const userLogin = (data) => {
     return new Promise ((resolve, reject) => {
@@ -36,5 +56,7 @@ const userLogin = (data) => {
 
 module.exports = {
     userSignUp,
+    userAccountCreation,
+    userContactHolder,
     userLogin
 }
