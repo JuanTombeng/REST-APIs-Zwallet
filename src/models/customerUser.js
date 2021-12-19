@@ -27,19 +27,19 @@ const userAccountCreation = (data) => {
     })
 }
 
-// // user contact holder creation after new user sign up
-// const userContactHolder = (userId) => {
-//     return new Promise ((resolve, reject) => {
-//         const sql = `INSERT INTO contact_holder SET ?`
-//         connection.query(sql, userId, (error, result) => {
-//             if (!error) {
-//                 resolve(result)
-//             } else {
-//                 reject(error)
-//             }
-//         })
-//     })
-// }
+// user profile creation after new user sign up
+const userProfileCreation = (data) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `INSERT INTO profiles SET ?`
+        connection.query(sql, data, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
 
 const userLogin = (data) => {
     return new Promise ((resolve, reject) => {
@@ -54,9 +54,38 @@ const userLogin = (data) => {
     })
 }
 
+const userUpdate = (userId, data) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET ? WHERE id = ?`
+        connection.query(sql, [data, userId], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const createTransaction = (data) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `INSERT INTO transactions SET ?`
+        connection.query(sql, data, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+
 module.exports = {
     userSignUp,
     userAccountCreation,
-    userContactHolder,
-    userLogin
+    userProfileCreation,
+    userLogin,
+    userUpdate,
+    createTransaction
 }

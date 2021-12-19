@@ -19,17 +19,18 @@ const userSignUp = async (req, res, next) => {
             id_user : userId,
             account_number : Math.floor(Math.random() * (11000 - 10000)) + 10000
         }
-        // const contactData = {
-        //     id : 3,
-        //     id_user_holder : userId
-        // }
+        const profileData = {
+            id_user : userId,
+            first_name : 'First Name',
+            last_name : 'Last Name'
+        }
         const result = await userQuery.userSignUp(userData)
         const account = await userQuery.userAccountCreation(accountData)
-        // const contact = await userQuery.userContactHolder(contactData)
+        const profile = await userQuery.userProfileCreation(profileData)
         res.json({
             results: result,
             accounts: account,
-            // contact : contact
+            profiles : profile
         })
     } catch (error) {
         res.json({
@@ -63,7 +64,53 @@ const userLogin = async (req, res, next) => {
     }
 }
 
+const userUpdate = async (req, res, next) => {
+    try {
+        const salt = await bcrypt.genSalt()
+        const {username, email, password} = req.body
+        const userId = req.params.id
+        const hashedPassword = await bcrypt.hash(password, salt)
+        const userData = {
+            username : username,
+            email : email,
+            password : hashedPassword,
+            updated_at : new Date()
+        }
+        const result = await userQuery.userUpdate(userId, userData)
+        res.json({
+            results : result
+        })
+    } catch (error) {
+        res.json({
+            message : error
+        })
+    }
+}
+
+const createTransaction = async (req, res, next) => {
+    try {
+        const {from_account_id, to_account_id, amount} = req.body
+        const transactionId = uuidv4()
+        const transactionData = {
+            id : transactionId,
+            from_account_id : from_account_id,
+            to_account_id : to_account_id,
+            amount : amount
+        }
+        const result = await userQuery.createTransaction(transactionData)
+        res.json({
+            results : result
+        })
+    } catch (error) {
+        res.json({
+            message : error
+        })
+    }
+}
+
 module.exports = {
     userSignUp,
-    userLogin
+    userLogin,
+    userUpdate,
+    createTransaction
 }
