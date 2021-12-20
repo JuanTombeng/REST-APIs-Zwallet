@@ -59,6 +59,36 @@ const deleteUser = (userId) => {
     })
 }
 
+const getAllAccounts = ({sort, order}) => {
+    return new Promise ((resolve, reject) => {
+        let sql = `SELECT users.username, users.email, profiles.first_name, profiles.last_name, accounts.id as account_id, accounts.account_number, 
+                accounts.balance FROM users INNER JOIN profiles ON users.id = profiles.id_user INNER JOIN accounts ON users.id = accounts.id_user`
+        if (order) {
+            sql += ` ORDER BY accounts.${order} ${sort}`
+        }
+        connection.query(sql, (error, result) => {
+            if(!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const updateAccount = (accountId, accountData) => {
+    return new Promise ((resolve, reject) => {
+        let sql = `UPDATE accounts SET ? WHERE id = ?`
+        connection.query(sql, [accountData, accountId], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const getAllTransactions = ({sort, order}) => {
     return new Promise ((resolve, reject) => {
         let sql = `SELECT users.username, transactions.from_account_id, transactions.to_account_id, transactions.amount, transactions.created_at 
@@ -90,11 +120,15 @@ const updateTransaction = (transactionId, data) => {
     })
 }
 
+
+
 module.exports = {
     getAllUsers,
     createNewUser,
     updateUser,
     deleteUser,
+    getAllAccounts,
+    updateAccount,
     getAllTransactions,
     updateTransaction
 }

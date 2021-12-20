@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt')
 const { v4 : uuidv4 } = require('uuid')
+const createError = require('http-errors')
+const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/customerUser.js')
 
 const userSignUp = async (req, res, next) => {
@@ -27,15 +29,21 @@ const userSignUp = async (req, res, next) => {
         const result = await userQuery.userSignUp(userData)
         const account = await userQuery.userAccountCreation(accountData)
         const profile = await userQuery.userProfileCreation(profileData)
-        res.json({
-            results: result,
-            accounts: account,
-            profiles : profile
-        })
+        const results = {
+            result : result,
+            account : account,
+            profile : profile
+        }
+        // res.json({
+        //     results: result,
+        //     accounts: account,
+        //     profiles : profile
+        // })
+        commonHelper.response(res, results, 200)
     } catch (error) {
-        res.json({
-            errorMessage : error
-        })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -49,18 +57,18 @@ const userLogin = async (req, res, next) => {
         const findUser = await userQuery.userLogin(data)
         const checkPassword = await bcrypt.compare(password, findUser[0].password)
         if (checkPassword) {
-            res.json({
-                message: `Login is Successful! Welcome back ${findUser[0].username}`
-            })
+            // res.status(500).json({
+            //     message: `Login is Successful! Welcome back ${findUser[0].username}`
+            // })
+            commonHelper.response(res, 'Login Completed', 200, `Login is Successful! Welcome back ${findUser[0].username}`)
         } else {
-            res.json({
-                message: `Sorry, your username or password is wrong! Please try again.`
-            })
+            // res.status().json({
+            //     message: `Sorry, your username or password is wrong! Please try again.`
+            // })
+            commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
         }
     } catch (error) {
-        res.json({
-            message : `Sorry, your username or password is wrong! Please try again.`
-        })
+        commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
     }
 }
 
@@ -77,13 +85,11 @@ const userUpdate = async (req, res, next) => {
             updated_at : new Date()
         }
         const result = await userQuery.userUpdate(userId, userData)
-        res.json({
-            results : result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            message : error
-        })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -98,13 +104,11 @@ const createTransaction = async (req, res, next) => {
             amount : amount
         }
         const result = await userQuery.createTransaction(transactionData)
-        res.json({
-            results : result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            message : error
-        })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 

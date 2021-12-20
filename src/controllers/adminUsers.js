@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt')
 const { v4 : uuidv4 } = require('uuid')
+const createError = require('http-errors')
+const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/adminUsers.js')
 
 const getUsers = async (req, res, next) => {
@@ -12,13 +14,17 @@ const getUsers = async (req, res, next) => {
             sort : sort,
             order : order
         })
-        res.json({
-            results: result
-        })
+        // res.json({
+        //     results: result
+        // })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            errorMessage : error
-        })
+        // res.json({
+        //     errorMessage : error
+        // })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -31,11 +37,11 @@ const createUser = async (req, res, next) => {
             password : password
         }
         const result = await userQuery.createNewUser(data)
-        res.json({
-            results: result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        new Error(error)
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -52,13 +58,11 @@ const updateUser = async (req, res, next) => {
             updated_at : new Date()
         }
         const result = await userQuery.updateUser(userId, userData)
-        res.json({
-            results : result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            message : `Select another id`
-        })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -66,13 +70,45 @@ const deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id
         const result = await userQuery.deleteUser(userId)
-        res.json({
-            results: result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            message : error
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
+    }
+}
+
+const getAccounts = async (req, res, next) => {
+    try {
+        const order = req.query.order || 'created_at'
+        const sort = req.query.sort || 'desc'
+        const result = await userQuery.getAllAccounts({
+            order : order,
+            sort : sort
         })
+        commonHelper.response(res, result, 200)
+    } catch (error) {
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
+    }
+}
+
+const updateAccount = async (req, res, next) => {
+    try {
+        const accountId = req.params.id
+        const {account_number, balance} = req.body
+        const accountData = {
+            account_number : account_number,
+            balance : balance,
+            updated_at : new Date()
+        }
+        const result = await userQuery.updateAccount(accountId, accountData)
+        commonHelper.response(res, result, 200, `Account with ID:${accountId} is updated!`)
+    } catch (error) {
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -84,13 +120,11 @@ const getTransactions = async (req, res, next) => {
             order : order,
             sort : sort
         })
-        res.json({
-            results: result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            message : error
-        })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -105,13 +139,11 @@ const updateTransaction = async (req, res, next) => {
             updated_at : new Date()
         }
         const result = await userQuery.updateTransaction(transactionId, transactionData)
-        res.json({
-            results : result
-        })
+        commonHelper.response(res, result, 200)
     } catch (error) {
-        res.json({
-            message : error
-        })
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
     }
 }
 
@@ -122,6 +154,8 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    getAccounts,
+    updateAccount,
     getTransactions,
     updateTransaction
 }
