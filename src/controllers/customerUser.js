@@ -39,7 +39,7 @@ const userSignUp = async (req, res, next) => {
         //     accounts: account,
         //     profiles : profile
         // })
-        commonHelper.response(res, results, 200)
+        commonHelper.response(res, results, 200, `New User is created with username : ${username}`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
@@ -85,7 +85,7 @@ const userUpdate = async (req, res, next) => {
             updated_at : new Date()
         }
         const result = await userQuery.userUpdate(userId, userData)
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `User with ID : ${userId} is updated!`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
@@ -104,7 +104,7 @@ const createTransaction = async (req, res, next) => {
             amount : amount
         }
         const result = await userQuery.createTransaction(transactionData)
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `New Transaction is created under the ID : ${transactionId}`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()

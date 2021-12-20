@@ -37,7 +37,7 @@ const createUser = async (req, res, next) => {
             password : password
         }
         const result = await userQuery.createNewUser(data)
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `New User is created with username : ${username}`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
@@ -58,7 +58,7 @@ const updateUser = async (req, res, next) => {
             updated_at : new Date()
         }
         const result = await userQuery.updateUser(userId, userData)
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `User with ID : ${userId} is updated!`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
@@ -70,7 +70,7 @@ const deleteUser = async (req, res, next) => {
     try {
         const userId = req.params.id
         const result = await userQuery.deleteUser(userId)
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `User with ID : ${userId} is deleted!`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
@@ -139,7 +139,7 @@ const updateTransaction = async (req, res, next) => {
             updated_at : new Date()
         }
         const result = await userQuery.updateTransaction(transactionId, transactionData)
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `Transaction with ID : ${transactionId} is updated!`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
