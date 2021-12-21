@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt')
-const { v4 : uuidv4 } = require('uuid')
 const createError = require('http-errors')
 const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/adminUsers.js')
@@ -9,19 +8,25 @@ const getUsers = async (req, res, next) => {
         const search = req.query.name
         const sort = req.query.sort || 'desc'
         const order = req.query.order || 'created_at'
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 2
+        const offset = (page - 1) * limit
         const result = await userQuery.getAllUsers({
             search : search,
             sort : sort,
-            order : order
+            order : order,
+            offset : offset,
+            limit : limit
         })
-        // res.json({
-        //     results: result
-        // })
-        commonHelper.response(res, result, 200)
+        const resultCount = await userQuery.countUsers()
+        const {total} = resultCount[0]
+        commonHelper.response(res, result, 200, `List of all users`, null, {
+            curretPage : page,
+            limit : limit,
+            totalData : total,
+            totalPage : Math.ceil(total / limit)
+        })
     } catch (error) {
-        // res.json({
-        //     errorMessage : error
-        // })
         console.log(error)
         const err = new createError.InternalServerError()
         next(err)
@@ -150,7 +155,6 @@ const updateTransaction = async (req, res, next) => {
 
 module.exports = {
     getUsers,
-    // searchUserByName,
     createUser,
     updateUser,
     deleteUser,

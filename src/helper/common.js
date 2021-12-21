@@ -5,13 +5,15 @@ const handleURLNotFound = (req, res, next) => {
     })
   }
 
-const response = (res, result, status, error)=>{
-    res.status(status).json({
-        status: 'Success!',
-        code: status || 200,
-        data: result,
-        message: error || null
-    })
+const response = (res, result, status, message, error, pagination)=>{
+  res.status(status).json({
+    status: 'Success!',
+    code: status || 200,
+    data: result,
+    message: message || null,
+    error : error || null,
+    pagination : pagination
+  })
 }
 
 module.exports = {

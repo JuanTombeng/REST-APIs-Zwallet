@@ -1,15 +1,28 @@
 const connection = require('../config/dbConfig.js')
 
-const getAllUsers = ({search, sort, order}) => {
+const getAllUsers = ({search, sort, order, limit, offset}) => {
     return new Promise((resolve, reject) => {
         let sql = `SELECT users.id, accounts.id AS id_accounts, users.email, profiles.first_name, profiles.last_name 
                 FROM users INNER JOIN profiles ON users.id = profiles.id_user 
                 INNER JOIN accounts ON users.id = accounts.id_user`
         if (search) {
-            sql += ` WHERE profiles.first_name LIKE '%${search}%' ORDER BY users.${order} ${sort}`
+            sql += ` WHERE profiles.first_name LIKE '%${search}%' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         } else {
-            sql += ` ORDER BY users.${order} ${sort}`
+            sql += ` ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         }
+        connection.query(sql, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const countUsers = () => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT COUNT(*) AS total FROM users`
         connection.query(sql, (error, result) => {
             if (!error) {
                 resolve(result)
@@ -124,6 +137,7 @@ const updateTransaction = (transactionId, data) => {
 
 module.exports = {
     getAllUsers,
+    countUsers,
     createNewUser,
     updateUser,
     deleteUser,
