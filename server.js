@@ -1,23 +1,20 @@
 const express = require('express');
 const morgan = require('morgan');
+require('dotenv').config()
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 const commonHelper = require('./src/helper/common.js')
-const adminRouter = require('./src/routes/adminUsers.js')
-const customerRouter = require('./src/routes/customerUser.js')
+const userRouter = require('./src/routes/users.js')
+const accountRouter = require('./src/routes/accounts.js')
+const transactionRouter = require('./src/routes/transactions.js')
 
 app.use(express.json());
 app.use(morgan('dev'))
 
-app.use('/admin/users', adminRouter)
-app.use('/users', customerRouter)
-
-// app.use((req, res, next) => {
-//     res.json({
-//         message : `URL Not Found`
-//     })
-// })
+app.use('/users', userRouter)
+app.use('/accounts', accountRouter)
+app.use('/transactions', transactionRouter)
 
 // URL not Found handler
 app.use(commonHelper.handleURLNotFound)
