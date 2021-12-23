@@ -5,17 +5,18 @@ const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/users.js')
 const accountQuery = require('../models/accounts.js')
 const profileQuery = require('../models/profiles.js')
+const validation = require('../middleware/common')
 
 const signup = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
-        const {username, email, password} = req.body
+        // const {username, email, password} = req.body
+        const validationData = req.body
         const userId = uuidv4()
-        const hashedPassword = await bcrypt.hash(password, salt)
+        const hashedPassword = await bcrypt.hash(validationData.password, salt)
         const userData = {
+            ...validationData,
             id : userId,
-            username : username,
-            email : email,
             password : hashedPassword
         }
         const accountData = {
@@ -28,7 +29,7 @@ const signup = async (req, res, next) => {
             first_name : 'First Name',
             last_name : 'Last Name'
         }
-
+        console.log(userData)
         const user = await userQuery.signup(userData)
         if (user.affectedRows > 0) {
             const account = await accountQuery.createAccount(accountData)
