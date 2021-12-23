@@ -13,12 +13,12 @@ const createAccount = (data) => {
     })
 }
 
-const getAccounts = ({sort, order}) => {
+const getAccounts = ({sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
         let sql = `SELECT users.username, users.email, profiles.first_name, profiles.last_name, accounts.id as account_id, accounts.account_number, 
                 accounts.balance FROM users INNER JOIN profiles ON users.id = profiles.id_user INNER JOIN accounts ON users.id = accounts.id_user`
         if (order) {
-            sql += ` ORDER BY accounts.${order} ${sort}`
+            sql += ` ORDER BY accounts.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         }
         connection.query(sql, (error, result) => {
             if(!error) {
