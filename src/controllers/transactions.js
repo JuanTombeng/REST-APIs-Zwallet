@@ -28,11 +28,21 @@ const getTransactions = async (req, res, next) => {
     try {
         const order = req.query.order || 'created_at'
         const sort = req.query.sort || 'desc'
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 2
+        const offset = (page - 1) * limit
         const result = await transactionQuery.getTransactions({
             order : order,
-            sort : sort
+            sort : sort,
+            offset : offset,
+            limit : limit
         })
-        commonHelper.response(res, result, 200)
+        commonHelper.response(res, result, 200, `List of all transactions`, null, {
+            curretPage : page,
+            limit : limit,
+            totalData : total,
+            totalPage : Math.ceil(total / limit)
+        })
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
