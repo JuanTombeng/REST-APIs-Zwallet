@@ -7,13 +7,16 @@ const transactionQuery = require('../models/transactions.js')
 
 const createTransaction = async (req, res, next) => {
     try {
-        const {from_account_id, to_account_id, amount} = req.body
+        const {from_account_id, to_account_id, amount, transaction_type, notes} = req.body
         const transactionId = uuidv4()
         const transactionData = {
             id : transactionId,
             from_account_id : from_account_id,
             to_account_id : to_account_id,
-            amount : amount
+            amount : amount,
+            transaction_type : transaction_type,
+            notes : notes,
+            status : 1
         }
         const result = await transactionQuery.createTransaction(transactionData)
         commonHelper.response(res, result, 200, `New Transaction is created under the ID : ${transactionId}`)
@@ -37,6 +40,8 @@ const getTransactions = async (req, res, next) => {
             offset : offset,
             limit : limit
         })
+        const resultCount = await transactionQuery.countTransactions()
+        const {total} = resultCount[0]
         commonHelper.response(res, result, 200, `List of all transactions`, null, {
             curretPage : page,
             limit : limit,

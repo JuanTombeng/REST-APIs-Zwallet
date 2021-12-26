@@ -31,6 +31,19 @@ const getTransactions = ({sort, order, limit, offset}) => {
     })
 }
 
+const countTransactions = () => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT COUNT(*) AS total FROM transactions`
+        connection.query(sql, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const updateTransaction = (transactionId, data) => {
     return new Promise ((resolve, reject) => {
         const sql = `UPDATE transactions SET ? WHERE id = ?`
@@ -47,5 +60,6 @@ const updateTransaction = (transactionId, data) => {
 module.exports = {
     createTransaction,
     getTransactions,
+    countTransactions,
     updateTransaction
 }
