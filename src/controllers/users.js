@@ -5,19 +5,19 @@ const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/users.js')
 const accountQuery = require('../models/accounts.js')
 const profileQuery = require('../models/profiles.js')
-const validation = require('../middleware/common')
 
 const signup = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
-        // const {username, email, password} = req.body
-        const validationData = req.body
+        const {username, email, password, pin} = req.body
         const userId = uuidv4()
-        const hashedPassword = await bcrypt.hash(validationData.password, salt)
+        const hashedPassword = await bcrypt.hash(password, salt)
         const userData = {
-            ...validationData,
             id : userId,
-            password : hashedPassword
+            username : username,
+            email : email,
+            password : hashedPassword,
+            pin : pin
         }
         const accountData = {
             id : uuidv4(),
@@ -27,7 +27,8 @@ const signup = async (req, res, next) => {
         const profileData = {
             id_user : userId,
             first_name : 'First Name',
-            last_name : 'Last Name'
+            last_name : 'Last Name',
+            phone_number : 082111111111,
         }
         console.log(userData)
         const user = await userQuery.signup(userData)
@@ -60,9 +61,6 @@ const login = async (req, res, next) => {
         if (checkPassword) {
             commonHelper.response(res, 'Login Completed', 200, `Login is Successful! Welcome back ${findUser[0].username}`)
         } else {
-            // res.status().json({
-            //     message: `Sorry, your username or password is wrong! Please try again.`
-            // })
             commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
         }
     } catch (error) {
@@ -104,14 +102,15 @@ const getUsers = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
-        const {username, email, password} = req.body
-        const userId = req.params.id
+        const {username, email, password, pin} = req.body
+        const userId = uuidv4()
         const hashedPassword = await bcrypt.hash(password, salt)
         const userData = {
+            id : userId,
             username : username,
             email : email,
             password : hashedPassword,
-            updated_at : new Date()
+            pin : pin
         }
         const result = await userQuery.updateUser(userId, userData)
         commonHelper.response(res, result, 200, `User with ID : ${userId} is updated!`)
