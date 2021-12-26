@@ -1,5 +1,3 @@
-const bcrypt = require('bcrypt')
-const { v4 : uuidv4 } = require('uuid')
 const createError = require('http-errors')
 const commonHelper = require('../helper/common.js')
 const accountQuery = require('../models/accounts.js')
@@ -18,6 +16,8 @@ const getAccounts = async (req, res, next) => {
             offset : offset,
             limit : limit
         })
+        const resultCount = await accountQuery.countAccounts()
+        const {total} = resultCount[0]
         commonHelper.response(res, result, 200, `List of all accounts`, null, {
             curretPage : page,
             limit : limit,

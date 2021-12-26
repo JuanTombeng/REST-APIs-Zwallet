@@ -30,6 +30,19 @@ const getAccounts = ({sort, order, limit, offset}) => {
     })
 }
 
+const countAccounts = () => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT COUNT(*) AS total FROM accounts`
+        connection.query(sql, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const updateAccount = (accountId, accountData) => {
     return new Promise ((resolve, reject) => {
         let sql = `UPDATE accounts SET ? WHERE id = ?`
@@ -45,6 +58,7 @@ const updateAccount = (accountId, accountData) => {
 
 module.exports = {
     createAccount,
+    countAccounts,
     getAccounts,
     updateAccount
 }
