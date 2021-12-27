@@ -103,7 +103,7 @@ const updateUser = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
         const {username, email, password, pin} = req.body
-        const userId = uuidv4()
+        const userId = req.params.id
         const hashedPassword = await bcrypt.hash(password, salt)
         const userData = {
             id : userId,
