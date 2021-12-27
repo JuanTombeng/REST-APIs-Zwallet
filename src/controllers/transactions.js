@@ -9,7 +9,7 @@ const createTransaction = async (req, res, next) => {
     try {
         const {from_account_id, to_account_id, amount, transaction_type, notes} = req.body
         const transactionId = uuidv4()
-        const transactionData = {
+        let transactionData = {
             id : transactionId,
             from_account_id : from_account_id,
             to_account_id : to_account_id,
@@ -18,8 +18,33 @@ const createTransaction = async (req, res, next) => {
             notes : notes,
             status : 1
         }
-        const result = await transactionQuery.createTransaction(transactionData)
-        commonHelper.response(res, result, 200, `New Transaction is created under the ID : ${transactionId}`)
+        const senderCheckBalance = await transactionQuery.checkBalance(from_account_id)
+        const receiverCheckBalance = await transactionQuery.checkBalance(to_account_id)
+        if (senderCheckBalance[0].balance > amount) {
+            const senderRemainingBalance = senderCheckBalance[0].balance - amount
+            const senderCurrentBalance = await transactionQuery.updateBalance(from_account_id, senderRemainingBalance)
+            const receiverAddedBalance = receiverCheckBalance[0].balance + amount
+            const receiverCurrentBalance = await transactionQuery.updateBalance(to_account_id, receiverAddedBalance)
+            const transfer = await transactionQuery.createTransaction(transactionData)
+            const result = {
+                senderBalance : senderCurrentBalance,
+                receiverBalance : receiverCurrentBalance,
+                transfer : transfer
+            }
+            commonHelper.response(res, result, 200, `New Transaction is created under the ID : ${transactionId}`)
+        } else if (senderCheckBalance[0].balance < amount) {
+            transactionData = {
+                ...transactionData,
+                status : 0
+            }
+            const transfer = await transactionQuery.createTransaction(transactionData)
+            commonHelper.response(res, transfer, 422, `Transaction with ID : ${transactionId} is failed due to the shortage of balance`)
+        } else {
+            console.log(error)
+            const err = new createError.InternalServerError()
+            next(err)
+        }
+        
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()

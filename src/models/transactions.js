@@ -13,6 +13,32 @@ const createTransaction = (data) => {
     })
 }
 
+const checkBalance = (from_account_id) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT balance FROM accounts WHERE id = ?`
+        connection.query(sql, from_account_id, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const updateBalance = (from_account_id, remainingBalance) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE accounts SET balance = ? WHERE id = ?`
+        connection.query(sql, [remainingBalance, from_account_id], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const getTransactions = ({sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
         let sql = `SELECT users.username, transactions.from_account_id, transactions.to_account_id, transactions.amount, transactions.created_at 
@@ -59,6 +85,8 @@ const updateTransaction = (transactionId, data) => {
 
 module.exports = {
     createTransaction,
+    checkBalance,
+    updateBalance,
     getTransactions,
     countTransactions,
     updateTransaction
