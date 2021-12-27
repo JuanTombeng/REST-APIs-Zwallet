@@ -28,7 +28,7 @@ const signup = async (req, res, next) => {
             id_user : userId,
             first_name : 'First Name',
             last_name : 'Last Name',
-            phone_number : 082111111111,
+            phone_number : 123123,
         }
         console.log(userData)
         const user = await userQuery.signup(userData)
