@@ -41,7 +41,7 @@ const updateBalance = (from_account_id, remainingBalance) => {
 
 const getTransactions = ({sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
-        let sql = `SELECT users.username, transactions.from_account_id, transactions.to_account_id, transactions.amount, transactions.created_at 
+        let sql = `SELECT users.username, transactions.from_account_id, transactions.to_account_id, transactions.amount, transactions.status, transactions.created_at 
                 FROM users INNER JOIN accounts ON users.id = accounts.id_user 
                 INNER JOIN transactions ON accounts.id = transactions.from_account_id`
         if (order) {
