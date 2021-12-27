@@ -40,7 +40,6 @@ const createTransaction = async (req, res, next) => {
             const transfer = await transactionQuery.createTransaction(transactionData)
             commonHelper.response(res, transfer, 422, `Transaction with ID : ${transactionId} is failed due to the shortage of balance`)
         } else {
-            console.log(error)
             const err = new createError.InternalServerError()
             next(err)
         }
