@@ -31,8 +31,8 @@ const login = (data) => {
 // middleware -Admin
 const getUsers = ({search, sort, order, limit, offset}) => {
     return new Promise((resolve, reject) => {
-        let sql = `SELECT users.id, accounts.id AS id_accounts, users.email, users.pin, profiles.first_name, profiles.last_name 
-                FROM users INNER JOIN profiles ON users.id = profiles.id_user 
+        let sql = `SELECT users.id, accounts.id AS id_accounts, users.email, users.pin, profiles.first_name, profiles.last_name,
+                profiles.phone_number FROM users INNER JOIN profiles ON users.id = profiles.id_user 
                 INNER JOIN accounts ON users.id = accounts.id_user`
         if (search) {
             sql += ` WHERE profiles.first_name LIKE '%${search}%' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
