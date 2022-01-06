@@ -99,11 +99,11 @@ const getUsers = async (req, res, next) => {
     }
 }
 
-const getUserById = async (req, res, next) => {
+const getUserDetails = async (req, res, next) => {
     try {
         const userId = req.params.id
-        const result = await userQuery.getUserById(userId)
-        commonHelper.response(res, result, 200, `List of all users`, null)
+        const result = await userQuery.getUserDetails(userId)
+        commonHelper.response(res, result, 200, `User detail:`, null)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()
@@ -150,7 +150,7 @@ module.exports = {
     signup,
     login,
     getUsers,
-    getUserById,
+    getUserDetails,
     updateUser,
     deleteUser
 }
