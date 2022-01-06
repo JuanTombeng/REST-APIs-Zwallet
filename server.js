@@ -8,10 +8,11 @@ const commonHelper = require('./src/helper/common.js')
 const userRouter = require('./src/routes/users.js')
 const accountRouter = require('./src/routes/accounts.js')
 const transactionRouter = require('./src/routes/transactions.js')
+const cors = require('cors')
 
 app.use(express.json());
 app.use(morgan('dev'))
-
+app.use(cors())
 app.use('/users', userRouter)
 app.use('/accounts', accountRouter)
 app.use('/transactions', transactionRouter)
