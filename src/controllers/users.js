@@ -99,6 +99,18 @@ const getUsers = async (req, res, next) => {
     }
 }
 
+const getUserById = async (req, res, next) => {
+    try {
+        const userId = req.params.id
+        const result = await userQuery.getUserById(userId)
+        commonHelper.response(res, result, 200, `List of all users`, null)
+    } catch (error) {
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
+    }
+}
+
 const updateUser = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
@@ -138,6 +150,7 @@ module.exports = {
     signup,
     login,
     getUsers,
+    getUserById,
     updateUser,
     deleteUser
 }

@@ -49,6 +49,22 @@ const getUsers = ({search, sort, order, limit, offset}) => {
     })
 }
 
+const getUserById = (userId) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT users.id, accounts.id AS id_accounts, accounts.balance, accounts.from_account_id,
+        accounts.to_account_id, accounts.amount, profiles.first_name, profiles.last_name,
+        profiles.phone_number FROM users INNER JOIN profiles ON users.id = profiles.id_user 
+        INNER JOIN accounts ON users.id = accounts.id_user WHERE users.id = ?`
+        connection.query(sql, userId, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 // middleware -Admin
 const countUsers = () => {
     return new Promise ((resolve, reject) => {
@@ -95,6 +111,7 @@ module.exports = {
     signup,
     login,
     getUsers,
+    getUserById,
     countUsers,
     updateUser,
     deleteUser
