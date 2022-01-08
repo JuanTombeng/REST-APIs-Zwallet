@@ -34,9 +34,8 @@ const getAccounts = async (req, res, next) => {
 const updateAccount = async (req, res, next) => {
     try {
         const accountId = req.params.id
-        const {account_number, balance} = req.body
+        const {balance} = req.body
         const accountData = {
-            account_number : account_number,
             balance : balance,
             updated_at : new Date()
         }
