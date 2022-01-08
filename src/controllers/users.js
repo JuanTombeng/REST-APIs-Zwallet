@@ -58,8 +58,9 @@ const login = async (req, res, next) => {
         }
         const findUser = await userQuery.login(data)
         const checkPassword = await bcrypt.compare(password, findUser[0].password)
+        console.log(findUser);
         if (checkPassword) {
-            commonHelper.response(res, 'Login Completed', 200, `Login is Successful! Welcome back ${findUser[0].username}`)
+            commonHelper.response(res, findUser, 200, `Login is Successful! Welcome back ${findUser[0].username}`)
         } else {
             commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
         }
@@ -111,6 +112,27 @@ const getUserDetails = async (req, res, next) => {
     }
 }
 
+// const getAccoutDetails = async (req, res, next) => {
+//     try {
+//         const userId = req.params.id
+//         const result = await 
+//     } catch (error) {
+        
+//     }
+// }
+
+const getUserProfile = async (req, res, next) => {
+    try {
+        const userId = req.params.id
+        const result = await userQuery.getUserProfile(userId)
+        commonHelper.response(res, result, 200, `User ${userId} Profile`, null)
+    } catch (error) {
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
+    }
+}
+
 const updateUser = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
@@ -151,6 +173,7 @@ module.exports = {
     login,
     getUsers,
     getUserDetails,
+    getUserProfile,
     updateUser,
     deleteUser
 }

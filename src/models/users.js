@@ -64,6 +64,27 @@ const getUserDetails = (userId) => {
     })
 }
 
+// // get account and user details by accountID
+// const getAccountDetails = (userId) => {
+//     return new Promise ((resolve, reject) => {
+//         const sql = `SELECT `
+//     })
+// }
+
+// home page header component elemets
+const getUserProfile = (userId) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT first_name, last_name, phone_number, profile_picture FROM profiles WHERE id_user = ?`
+        connection.query(sql, userId, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 // middleware -Admin
 const countUsers = () => {
     return new Promise ((resolve, reject) => {
@@ -111,6 +132,7 @@ module.exports = {
     login,
     getUsers,
     getUserDetails,
+    getUserProfile,
     countUsers,
     updateUser,
     deleteUser
