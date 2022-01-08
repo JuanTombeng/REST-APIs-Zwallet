@@ -63,7 +63,7 @@ const getTransactionsHistory = (userId) => {
         const sql = `SELECT users.first_name, users.last_name, transactions.from_user_id, transactions.to_user_id, transactions.amount,
         transactions.transaction_type,  transactions.status, transactions.created_at 
         FROM users INNER JOIN transactions ON users.id = transactions.to_user_id WHERE transactions.from_user_id = ${userId} 
-        AND transactions.to_user_id = ${userId}`
+        OR transactions.to_user_id = ${userId}`
         connection.query(sql, (error, result) => {
             if (!error) {
                 resolve(result)
