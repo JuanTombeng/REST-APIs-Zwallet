@@ -49,7 +49,7 @@ const updateAccount = async (req, res, next) => {
     }
 }
 
-const getAccountDetails = (req, res, next) => {
+const getAccountDetails = async (req, res, next) => {
     try {
         const userId = req.params.id
         const result = await accountQuery.getAccountDetails(userId)
