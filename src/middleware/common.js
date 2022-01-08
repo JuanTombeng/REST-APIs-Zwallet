@@ -27,17 +27,17 @@ const userInputValidation = (req, res, next) => {
 
 // validation for create transaction
 const transactionInputValidation = (req, res, next) => {
-    const {from_account_id, to_account_id, amount, transaction_type, notes, status} = req.body
+    const {from_user_id, to_user_id, amount, transaction_type, notes, status} = req.body
     const validateData = Joi.object({
-        from_account_id : Joi.string().required(),
-        to_account_id : Joi.string().required(),
+        from_user_id : Joi.string().required(),
+        to_user_id : Joi.string().required(),
         amount : Joi.number().required(),
         transaction_type : Joi.string().required(),
         notes : Joi.string().required(),
     })
     const { error } = validateData.validate({
-        from_account_id : from_account_id,
-        to_account_id : to_account_id,
+        from_user : from_user_id,
+        to_user_id : to_user_id,
         amount : amount,
         transaction_type : transaction_type,
         notes : notes,
