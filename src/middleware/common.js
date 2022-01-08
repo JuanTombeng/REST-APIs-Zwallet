@@ -36,7 +36,7 @@ const transactionInputValidation = (req, res, next) => {
         notes : Joi.string().required(),
     })
     const { error } = validateData.validate({
-        from_user : from_user_id,
+        from_user_id : from_user_id,
         to_user_id : to_user_id,
         amount : amount,
         transaction_type : transaction_type,
