@@ -15,8 +15,8 @@ const createAccount = (data) => {
 
 const getAccounts = ({sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
-        let sql = `SELECT users.username, users.email, profiles.first_name, profiles.last_name, accounts.id as account_id, accounts.account_number, 
-                accounts.balance FROM users INNER JOIN profiles ON users.id = profiles.id_user INNER JOIN accounts ON users.id = accounts.id_user`
+        let sql = `SELECT users.username, users.email, users.first_name, users.last_name, accounts.id as account_id, accounts.id_user, 
+                accounts.balance FROM users INNER JOIN accounts ON users.id = accounts.id_user`
         if (order) {
             sql += ` ORDER BY accounts.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         }
@@ -43,12 +43,12 @@ const countAccounts = () => {
     })
 }
 
-const getAccountDetails = (userId) => {
+const getAccountDetails = (accountId) => {
     return new Promise((resolve, reject) => {
         const sql = `SELECT users.id, accounts.id AS account_id, accounts.account_number, accounts.balance, transactions.from_account_id, 
         transactions.to_account_id, transactions.amount FROM accounts INNER JOIN transactions ON accounts.id = transactions.from_account_id 
         INNER JOIN users ON accounts.id_user = users.id WHERE users.id = ? ORDER BY transactions.created_at ASC`
-        connection.query(sql, userId, (error, result) => {
+        connection.query(sql, accountId, (error, result) => {
             if (!error) {
                 resolve(result)
             } else {

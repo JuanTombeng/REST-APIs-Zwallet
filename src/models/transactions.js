@@ -13,10 +13,10 @@ const createTransaction = (data) => {
     })
 }
 
-const checkBalance = (from_account_id) => {
+const checkBalance = (id_user) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT balance FROM accounts WHERE id = ?`
-        connection.query(sql, from_account_id, (error, result) => {
+        const sql = `SELECT balance FROM accounts WHERE id_user = ?`
+        connection.query(sql, id_user, (error, result) => {
             if (!error) {
                 resolve(result)
             } else {
@@ -26,10 +26,10 @@ const checkBalance = (from_account_id) => {
     })
 }
 
-const updateBalance = (from_account_id, remainingBalance) => {
+const updateBalance = (user_id, balance) => {
     return new Promise ((resolve, reject) => {
-        const sql = `UPDATE accounts SET balance = ? WHERE id = ?`
-        connection.query(sql, [remainingBalance, from_account_id], (error, result) => {
+        const sql = `UPDATE accounts SET balance = ? WHERE id_user = ?`
+        connection.query(sql, [balance, user_id], (error, result) => {
             if (!error) {
                 resolve(result)
             } else {
@@ -41,9 +41,9 @@ const updateBalance = (from_account_id, remainingBalance) => {
 
 const getTransactions = ({sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
-        let sql = `SELECT users.username, transactions.from_account_id, transactions.to_account_id, transactions.amount, transactions.status, transactions.created_at 
-                FROM users INNER JOIN accounts ON users.id = accounts.id_user 
-                INNER JOIN transactions ON accounts.id = transactions.from_account_id`
+        let sql = `SELECT users.first_name, users.last_name, transactions.from_user_id, transactions.to_user_id, transactions.amount,
+        transactions.transaction_type,  transactions.status, transactions.created_at 
+        FROM users INNER JOIN transactions ON users.id = transactions.to_user_id`
         if (order) {
             sql += ` ORDER BY ${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         }

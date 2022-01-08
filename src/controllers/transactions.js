@@ -7,24 +7,24 @@ const transactionQuery = require('../models/transactions.js')
 
 const createTransaction = async (req, res, next) => {
     try {
-        const {from_account_id, to_account_id, amount, transaction_type, notes} = req.body
+        const {from_user_id, to_user_id, amount, transaction_type, notes} = req.body
         const transactionId = uuidv4()
         let transactionData = {
             id : transactionId,
-            from_account_id : from_account_id,
-            to_account_id : to_account_id,
+            from_user_id : from_user_id,
+            to_user_id : to_user_id,
             amount : amount,
             transaction_type : transaction_type,
             notes : notes,
             status : 1
         }
-        const senderCheckBalance = await transactionQuery.checkBalance(from_account_id)
-        const receiverCheckBalance = await transactionQuery.checkBalance(to_account_id)
+        const senderCheckBalance = await transactionQuery.checkBalance(from_user_id)
+        const receiverCheckBalance = await transactionQuery.checkBalance(to_user_id)
         if (senderCheckBalance[0].balance > amount) {
             const senderRemainingBalance = senderCheckBalance[0].balance - amount
-            const senderCurrentBalance = await transactionQuery.updateBalance(from_account_id, senderRemainingBalance)
+            const senderCurrentBalance = await transactionQuery.updateBalance(from_user_id, senderRemainingBalance)
             const receiverAddedBalance = receiverCheckBalance[0].balance + amount
-            const receiverCurrentBalance = await transactionQuery.updateBalance(to_account_id, receiverAddedBalance)
+            const receiverCurrentBalance = await transactionQuery.updateBalance(to_user_id, receiverAddedBalance)
             const transfer = await transactionQuery.createTransaction(transactionData)
             const result = {
                 senderBalance : senderCurrentBalance,

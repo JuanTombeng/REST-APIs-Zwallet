@@ -17,8 +17,8 @@ const signup = (data) => {
 // Admin & Customer
 const login = (data) => {
     return new Promise ((resolve, reject) => {
-        const findUserQuery = `SELECT users.id, users.username, users.email, users.password, users.pin,
-        accounts.id AS id_account, accounts.id_user FROM users INNER JOIN accounts ON users.id = accounts.id_user 
+        const findUserQuery = `SELECT users.id, users.first_name, users.last_name, users.email, users.password, users.pin,
+        accounts.id AS id_account, FROM users INNER JOIN accounts ON users.id = accounts.id_user 
         WHERE users.email = ?`
         connection.query(findUserQuery, data.email, (error, result) => {
             if (!error) {
@@ -33,11 +33,10 @@ const login = (data) => {
 // middleware -Admin
 const getUsers = ({search, sort, order, limit, offset}) => {
     return new Promise((resolve, reject) => {
-        let sql = `SELECT users.id, accounts.id AS id_accounts, users.email, users.pin, profiles.first_name, profiles.last_name,
-                profiles.phone_number FROM users INNER JOIN profiles ON users.id = profiles.id_user 
-                INNER JOIN accounts ON users.id = accounts.id_user`
+        let sql = `SELECT users.id, accounts.id AS id_accounts, users.email, users.pin, users.first_name, users.last_name,
+                users.phone_number FROM users INNER JOIN accounts ON users.id = accounts.id_user`
         if (search) {
-            sql += ` WHERE profiles.first_name LIKE '%${search}%' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
+            sql += ` WHERE users.first_name LIKE '%${search}%' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         } else {
             sql += ` ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
         }
@@ -53,9 +52,8 @@ const getUsers = ({search, sort, order, limit, offset}) => {
 
 const getUserDetails = (userId) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT users.id, accounts.id AS id_accounts, accounts.balance, profiles.first_name, profiles.last_name,
-        profiles.phone_number FROM users INNER JOIN profiles ON users.id = profiles.id_user 
-        INNER JOIN accounts ON users.id = accounts.id_user WHERE users.id = ?`
+        const sql = `SELECT users.id, accounts.id AS id_accounts, accounts.balance, users.email, users.first_name, users.last_name,
+        users.phone_number, users.profile_picture FROM users INNER JOIN accounts ON users.id = accounts.id_user WHERE users.id = ?`
         connection.query(sql, userId, (error, result) => {
             if (!error) {
                 resolve(result)
@@ -66,26 +64,6 @@ const getUserDetails = (userId) => {
     })
 }
 
-// // get account and user details by accountID
-// const getAccountDetails = (userId) => {
-//     return new Promise ((resolve, reject) => {
-//         const sql = `SELECT `
-//     })
-// }
-
-// home page header component elemets
-const getUserProfile = (userId) => {
-    return new Promise ((resolve, reject) => {
-        const sql = `SELECT first_name, last_name, phone_number, profile_picture FROM profiles WHERE id_user = ?`
-        connection.query(sql, userId, (error, result) => {
-            if (!error) {
-                resolve(result)
-            } else {
-                reject(error)
-            }
-        })
-    })
-}
 
 // middleware -Admin
 const countUsers = () => {
@@ -134,7 +112,6 @@ module.exports = {
     login,
     getUsers,
     getUserDetails,
-    getUserProfile,
     countUsers,
     updateUser,
     deleteUser

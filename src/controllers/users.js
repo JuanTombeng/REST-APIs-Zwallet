@@ -17,28 +17,23 @@ const signup = async (req, res, next) => {
             username : username,
             email : email,
             password : hashedPassword,
-            pin : pin
-        }
-        const accountData = {
-            id : uuidv4(),
-            id_user : userId,
-            account_number : Math.floor(Math.random() * (11000 - 10000)) + 10000
-        }
-        const profileData = {
-            id_user : userId,
+            pin : pin,
             first_name : 'First Name',
             last_name : 'Last Name',
             phone_number : 123123,
+            profile_picture : null
+        }
+        const accountData = {
+            id : uuidv4(),
+            id_user : userId
         }
         console.log(userData)
         const user = await userQuery.signup(userData)
         if (user.affectedRows > 0) {
             const account = await accountQuery.createAccount(accountData)
-            const profile = await profileQuery.createProfile(profileData)
             const results = {
                 user : user,
-                account : account,
-                profile : profile
+                account : account
             }
             commonHelper.response(res, results, 200, `New User is created with username : ${username}`)
         }
@@ -112,31 +107,10 @@ const getUserDetails = async (req, res, next) => {
     }
 }
 
-// const getAccoutDetails = async (req, res, next) => {
-//     try {
-//         const userId = req.params.id
-//         const result = await 
-//     } catch (error) {
-        
-//     }
-// }
-
-const getUserProfile = async (req, res, next) => {
-    try {
-        const userId = req.params.id
-        const result = await userQuery.getUserProfile(userId)
-        commonHelper.response(res, result, 200, `User ${userId} Profile`, null)
-    } catch (error) {
-        console.log(error)
-        const err = new createError.InternalServerError()
-        next(err)
-    }
-}
-
 const updateUser = async (req, res, next) => {
     try {
         const salt = await bcrypt.genSalt()
-        const {username, email, password, pin} = req.body
+        const {username, email, password, pin, first_name, last_name, phone_number} = req.body
         const userId = req.params.id
         const hashedPassword = await bcrypt.hash(password, salt)
         const userData = {
@@ -144,7 +118,10 @@ const updateUser = async (req, res, next) => {
             username : username,
             email : email,
             password : hashedPassword,
-            pin : pin
+            pin : pin,
+            first_name : first_name,
+            last_name : last_name,
+            phone_number : phone_number
         }
         const result = await userQuery.updateUser(userId, userData)
         commonHelper.response(res, result, 200, `User with ID : ${userId} is updated!`)
@@ -173,7 +150,6 @@ module.exports = {
     login,
     getUsers,
     getUserDetails,
-    getUserProfile,
     updateUser,
     deleteUser
 }
