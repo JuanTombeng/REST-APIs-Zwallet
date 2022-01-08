@@ -43,6 +43,21 @@ const countAccounts = () => {
     })
 }
 
+const getAccountDetails = (userId) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT users.id, accounts.id AS account_id, accounts.account_number, accounts.balance, transactions.from_account_id, 
+        transactions.to_account_id, transactions.amount FROM accounts INNER JOIN transactions ON accounts.id = transactions.from_account_id 
+        INNER JOIN users ON accounts.id_user = users.id WHERE users.id = ?`
+        connection.query(sql, userId, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const updateAccount = (accountId, accountData) => {
     return new Promise ((resolve, reject) => {
         let sql = `UPDATE accounts SET ? WHERE id = ?`
@@ -60,5 +75,6 @@ module.exports = {
     createAccount,
     countAccounts,
     getAccounts,
-    updateAccount
+    updateAccount,
+    getAccountDetails
 }

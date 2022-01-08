@@ -49,7 +49,20 @@ const updateAccount = async (req, res, next) => {
     }
 }
 
+const getAccountDetails = (req, res, next) => {
+    try {
+        const userId = req.params.id
+        const result = await accountQuery.getAccountDetails(userId)
+        commonHelper.response(res, result, 200, `Account details of User : ${userId}`, null)
+    } catch (error) {
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
+    }
+}
+
 module.exports = {
     getAccounts,
-    updateAccount
+    updateAccount,
+    getAccountDetails
 }
