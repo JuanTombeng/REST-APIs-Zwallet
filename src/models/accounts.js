@@ -47,7 +47,7 @@ const getAccountDetails = (userId) => {
     return new Promise((resolve, reject) => {
         const sql = `SELECT users.id, accounts.id AS account_id, accounts.account_number, accounts.balance, transactions.from_account_id, 
         transactions.to_account_id, transactions.amount FROM accounts INNER JOIN transactions ON accounts.id = transactions.from_account_id 
-        INNER JOIN users ON accounts.id_user = users.id WHERE users.id = ?`
+        INNER JOIN users ON accounts.id_user = users.id WHERE users.id = ? ORDER BY transactions.created_at ASC`
         connection.query(sql, userId, (error, result) => {
             if (!error) {
                 resolve(result)
