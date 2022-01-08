@@ -57,6 +57,23 @@ const getTransactions = ({sort, order, limit, offset}) => {
     })
 }
 
+//get transactions history by sender ID
+const getTransactionsHistory = (userId) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT users.first_name, users.last_name, transactions.from_user_id, transactions.to_user_id, transactions.amount,
+        transactions.transaction_type,  transactions.status, transactions.created_at 
+        FROM users INNER JOIN transactions ON users.id = transactions.to_user_id WHERE transactions.from_user_id = ${userId} 
+        AND transactions.to_user_id = ${userId}`
+        connection.query(sql, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const countTransactions = () => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT COUNT(*) AS total FROM transactions`
@@ -88,6 +105,7 @@ module.exports = {
     checkBalance,
     updateBalance,
     getTransactions,
+    getTransactionsHistory,
     countTransactions,
     updateTransaction
 }

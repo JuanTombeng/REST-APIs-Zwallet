@@ -79,6 +79,19 @@ const getTransactions = async (req, res, next) => {
     }
 }
 
+//get transactions history by sender ID
+const getTransactionsHistory = async (req, res, next) => {
+    try {
+        const userId = req.params.id
+        const result = await transactionQuery.getTransactionsHistory(userId)
+        commonHelper.response(res, result, 200, `Transaction History of user : ${userId}.`)
+    } catch (error) {
+        console.log(error)
+        const err = new createError.InternalServerError()
+        next(err)
+    }
+}
+
 const updateTransaction = async (req, res, next) => {
     try {
         const transactionId = req.params.id
@@ -102,5 +115,6 @@ const updateTransaction = async (req, res, next) => {
 module.exports = {
     createTransaction,
     getTransactions,
+    getTransactionsHistory,
     updateTransaction
 }
