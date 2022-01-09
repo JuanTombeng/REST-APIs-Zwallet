@@ -18,7 +18,7 @@ const signup = (data) => {
 const login = (data) => {
     return new Promise ((resolve, reject) => {
         const findUserQuery = `SELECT users.id, users.first_name, users.last_name, users.email, users.password, users.pin,
-        accounts.id AS id_account, FROM users INNER JOIN accounts ON users.id = accounts.id_user 
+        accounts.id AS id_account FROM users INNER JOIN accounts ON users.id = accounts.id_user 
         WHERE users.email = ?`
         connection.query(findUserQuery, data.email, (error, result) => {
             if (!error) {
