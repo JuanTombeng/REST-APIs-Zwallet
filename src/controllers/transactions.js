@@ -83,6 +83,7 @@ const getTransactions = async (req, res, next) => {
 const getTransactionsHistory = async (req, res, next) => {
     try {
         const userId = req.params.id
+        console.log(userId)
         const result = await transactionQuery.getTransactionsHistory(userId)
         commonHelper.response(res, result, 200, `Transaction History of user : ${userId}.`)
     } catch (error) {
