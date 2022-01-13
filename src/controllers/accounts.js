@@ -33,14 +33,14 @@ const getAccounts = async (req, res, next) => {
 
 const updateAccount = async (req, res, next) => {
     try {
-        const accountId = req.params.id
+        const userId = req.params.id
         const {balance} = req.body
         const accountData = {
             balance : balance,
             updated_at : new Date()
         }
-        const result = await accountQuery.updateAccount(accountId, accountData)
-        commonHelper.response(res, result, 200, `Account with ID:${accountId} is updated!`)
+        const result = await accountQuery.updateAccount(userId, accountData)
+        commonHelper.response(res, result, 200, `Account with ID:${userId} is updated!`)
     } catch (error) {
         console.log(error)
         const err = new createError.InternalServerError()

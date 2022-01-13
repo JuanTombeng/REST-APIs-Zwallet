@@ -58,10 +58,10 @@ const getAccountDetails = (accountId) => {
     })
 }
 
-const updateAccount = (accountId, accountData) => {
+const updateAccount = (userId, accountData) => {
     return new Promise ((resolve, reject) => {
-        let sql = `UPDATE accounts SET ? WHERE id = ?`
-        connection.query(sql, [accountData, accountId], (error, result) => {
+        let sql = `UPDATE accounts SET ? WHERE id_user = ?`
+        connection.query(sql, [accountData, userId], (error, result) => {
             if (!error) {
                 resolve(result)
             } else {
