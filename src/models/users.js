@@ -1,6 +1,5 @@
 const connection = require('../config/dbConfig.js')
 
-// Admin & Customer
 const signup = (data) => {
     return new Promise ((resolve, reject) => {
         const sql = `INSERT INTO users SET ?`
@@ -14,7 +13,7 @@ const signup = (data) => {
     })
 }
 
-// Admin & Customer
+
 const login = (data) => {
     return new Promise ((resolve, reject) => {
         const findUserQuery = `SELECT users.id, users.first_name, users.last_name, users.email, users.password, users.pin,
@@ -30,7 +29,7 @@ const login = (data) => {
     })
 }
 
-// middleware -Admin
+
 const getUsers = ({search, sort, order, limit, offset}) => {
     return new Promise((resolve, reject) => {
         let sql = `SELECT users.id, accounts.id AS id_accounts, users.email, users.pin, users.first_name, users.last_name,
@@ -52,8 +51,9 @@ const getUsers = ({search, sort, order, limit, offset}) => {
 
 const getUserDetails = (userId) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT users.id, accounts.id AS id_accounts, accounts.balance, users.email, users.first_name, users.last_name,
-        users.phone_number, users.profile_picture FROM users INNER JOIN accounts ON users.id = accounts.id_user WHERE users.id = ?`
+        const sql = `SELECT users.id, users.email, users.first_name, users.last_name,
+        users.phone_number, users.profile_picture, accounts.id AS id_accounts, accounts.balance, accounts.income,
+        accounts.outcome FROM users INNER JOIN accounts ON users.id = accounts.id_user WHERE users.id = ?`
         connection.query(sql, userId, (error, result) => {
             if (!error) {
                 resolve(result)
@@ -65,7 +65,7 @@ const getUserDetails = (userId) => {
 }
 
 
-// middleware -Admin
+
 const countUsers = () => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT COUNT(*) AS total FROM users`
@@ -79,7 +79,7 @@ const countUsers = () => {
     })
 }
 
-// middleware -Admin and User
+
 const updateUser = (userId, data) => {
     return new Promise ((resolve, reject) => {
         const sql = `UPDATE users SET ? WHERE id = ?`
@@ -93,7 +93,7 @@ const updateUser = (userId, data) => {
     })
 }
 
-// middleware -Admin
+
 const deleteUser = (userId) => {
     return new Promise ((resolve, reject) => {
         const sql = `DELETE FROM users WHERE id = ?`

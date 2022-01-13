@@ -20,7 +20,7 @@ const signup = async (req, res, next) => {
             pin : pin,
             first_name : 'First Name',
             last_name : 'Last Name',
-            phone_number : 123123,
+            phone_number : 082111111111,
             profile_picture : null
         }
         const accountData = {
