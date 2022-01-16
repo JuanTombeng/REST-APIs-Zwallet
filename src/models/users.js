@@ -51,7 +51,7 @@ const getUsers = ({search, sort, order, limit, offset}) => {
 
 const getUserDetails = (userId) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT users.id, users.email, users.first_name, users.last_name,
+        const sql = `SELECT users.id, users.email, users.first_name, users.last_name, users.pin,
         users.phone_number, users.profile_picture, accounts.id AS id_accounts, accounts.balance, accounts.income,
         accounts.outcome FROM users INNER JOIN accounts ON users.id = accounts.id_user WHERE users.id = ?`
         connection.query(sql, userId, (error, result) => {
