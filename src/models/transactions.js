@@ -129,6 +129,21 @@ const getTransactionsHistory = (userId) => {
     })
 }
 
+const getTransactionDetails = (userId) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT transactions.id, transactions.from_user_id, transactions.to_user_id, transactions.amount, transactions.notes, 
+        transactions.created_at, accounts.balance FROM transactions INNER JOIN accounts ON transactions.from_user_id = accounts.id_user 
+        WHERE transactions.from_user_id = ?`
+        connection.query(sql, userId, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const countTransactions = () => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT COUNT(*) AS total FROM transactions`
@@ -165,6 +180,7 @@ module.exports = {
     updateOutcome,
     getTransactions,
     getTransactionsHistory,
+    getTransactionDetails,
     countTransactions,
     updateTransaction
 }
