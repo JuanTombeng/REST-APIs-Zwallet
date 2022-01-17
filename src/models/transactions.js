@@ -39,6 +39,60 @@ const updateBalance = (user_id, balance) => {
     })
 }
 
+const currentOutcome = (user_id) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT outcome FROM accounts WHERE id_user = ?`
+        connection.query(sql, user_id, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else (
+                reject(error)
+            )
+        })
+    })
+}
+
+const currentIncome = (user_id) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT income FROM accounts WHERE id_user = ?`
+        connection.query(sql, user_id, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else (
+                reject(error)
+            )
+        })
+    })
+}
+
+
+const updateOutcome = (user_id, totalOutcome) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE accounts SET outcome = ? WHERE id_user = ?`
+        connection.query(sql, [totalOutcome, user_id], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const updateIncome = (user_id, totalIncome) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE accounts SET income = ? WHERE id_user = ?`
+        connection.query(sql, [totalIncome, user_id], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+
 const getTransactions = ({sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
         let sql = `SELECT users.first_name, users.last_name, transactions.from_user_id, transactions.to_user_id, transactions.amount,
@@ -105,6 +159,10 @@ module.exports = {
     createTransaction,
     checkBalance,
     updateBalance,
+    currentIncome,
+    currentOutcome,
+    updateIncome,
+    updateOutcome,
     getTransactions,
     getTransactionsHistory,
     countTransactions,

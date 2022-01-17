@@ -19,12 +19,22 @@ const createTransaction = async (req, res, next) => {
             status : 1
         }
         const senderCheckBalance = await transactionQuery.checkBalance(from_user_id)
+        const senderCurrentOutcome = await transactionQuery.currentOutcome(from_user_id)
         const receiverCheckBalance = await transactionQuery.checkBalance(to_user_id)
+        const receiverCurrentIncome = await transactionQuery.currentIncome(to_user_id)
         if (senderCheckBalance[0].balance > amount) {
             const senderRemainingBalance = senderCheckBalance[0].balance - amount
             const senderCurrentBalance = await transactionQuery.updateBalance(from_user_id, senderRemainingBalance)
+            //
+            const senderTotalOutcome = senderCurrentOutcome + amount
+            const senderOutcomeUpdate = await transactionQuery.updateOutcome(from_user_id, senderTotalOutcome)
+            //
             const receiverAddedBalance = receiverCheckBalance[0].balance + amount
             const receiverCurrentBalance = await transactionQuery.updateBalance(to_user_id, receiverAddedBalance)
+            //
+            const receiverTotalIncome = receiverCurrentIncome + amount
+            const receiverIncomeUpdate = await transactionQuery.updateIncome(to_user_id, receiverTotalIncome)
+            //
             const transfer = await transactionQuery.createTransaction(transactionData)
             const result = {
                 senderBalance : senderCurrentBalance,
