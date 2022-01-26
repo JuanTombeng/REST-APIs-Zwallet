@@ -27,7 +27,7 @@ const findUserEmail = (username, email) => {
 }
 
 const updateVerifiedUser = (username, email) => {
-    return Promise ((resolve, reject) => {
+    return new Promise ((resolve, reject) => {
         const sql = `UPDATE users SET active = 1 WHERE username = ? AND email = ?`
         connection.query(sql, [username, email], (error, result) => {
             if (!error) {

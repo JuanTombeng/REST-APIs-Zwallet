@@ -47,7 +47,6 @@ const signup = async (req, res, next) => {
                 }
                 const token = jwt.sign(payload, secretKey, verifyOptions);
                 results.token = token
-                commonHelper.response(res, results, 200, `New User is created with username : ${username}`)
                 commonHelper.sendEmailVerification(email, token)
             }
         } else {
@@ -58,6 +57,19 @@ const signup = async (req, res, next) => {
         next(createError(500, new createError.InternalServerError()));
     }
 }
+
+// const updateVerifiedUser = async (req, res, next) => {
+//     try {
+//         const username = req.username
+//         const email = req.email
+//         const result = await userQuery.updateVerifiedUser(username, email)
+//         commonHelper.response(res, result, 200, `User with username ${username} is verified`)
+//         res.redirect('http://localhost:3000/login')
+//     } catch (error) {
+//         console.log(error)
+//         next(createError(500, new createError.InternalServerError()));
+//     }
+// }
 
 const login = async (req, res, next) => {
     try {

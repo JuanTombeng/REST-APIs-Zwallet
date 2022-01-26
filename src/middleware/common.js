@@ -55,17 +55,19 @@ const transactionInputValidation = (req, res, next) => {
 
 const emailTokenVerification = async (req, res, next) => {
     try {
-        const receivedToken = req.params.token
+        const receivedToken = req.params.id
         const secretKey = process.env.SECRET_KEY
         const confirmEmail = jwt.verify(receivedToken, secretKey)
-        req.username = confirmEmail.username,
-        req.email = confirmEmail.email
-        const updateUserStatus = await userQuery.updateVerifiedUser(req.username, req.email)
-        commonHelper.response(res, updateUserStatus, 200, `User with username ${req.username} is verified`, null)
+        const username = confirmEmail.username
+        const email = confirmEmail.email
+        const result = await userQuery.updateVerifiedUser(username, email)
+        console.log(`update user : ${result}`)
         res.redirect('http://localhost:3000/login')
+        commonHelper.response(res, result, 200, `User with username ${username} is verified`)
     } catch (error) {
-        if (err && err.name === 'JsonWebTokenError') { return next(createError(400, 'Token Invalid')); } else if (err && err.name === 'TokenExpiredError') { return next(createError(400, 'Token Expired')); } else {
-            return next(createError(400, 'Token not actived'));
+        if (error && error.name === 'JsonWebTokenError') { return next(createError(400, 'Token Invalid')); } else if (error && error.name === 'TokenExpiredError') { return next(createError(400, 'Token Expired')); } else {
+            console.log(error)
+            return next(createError(400, error));
         }
     }
 }
