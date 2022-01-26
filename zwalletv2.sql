@@ -11,6 +11,8 @@ CREATE TABLE users (id VARCHAR(64) NOT NULL PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
     profile_picture BLOB NULL,
+    role VARCHAR(64) NOT NULL DEFAULT 'user',
+    active TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL);
 

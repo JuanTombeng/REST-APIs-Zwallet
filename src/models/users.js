@@ -13,6 +13,31 @@ const signup = (data) => {
     })
 }
 
+const findUserEmail = (username, email) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT email from users WHERE username = ? AND email = ?`
+        connection.query(sql, [username, email], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const updateVerifiedUser = (username, email) => {
+    return Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET active = 1 WHERE username = ? AND email = ?`
+        connection.query(sql, [username, email], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
 
 const login = (data) => {
     return new Promise ((resolve, reject) => {
@@ -109,6 +134,8 @@ const deleteUser = (userId) => {
 
 module.exports = {
     signup,
+    findUserEmail,
+    updateVerifiedUser,
     login,
     getUsers,
     getUserDetails,

@@ -9,5 +9,6 @@ route.post('/signup', validator.userInputValidation, usersController.signup)
 route.post('/login', usersController.login)
 route.put('/update/:id', validator.userInputValidation, usersController.updateUser)
 route.delete('/delete/:id', usersController.deleteUser)
+route.get('/email-verification/:token', validator.emailTokenVerification)
 
 module.exports = route

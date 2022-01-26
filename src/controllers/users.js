@@ -5,6 +5,7 @@ const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/users.js')
 const accountQuery = require('../models/accounts.js')
 const profileQuery = require('../models/profiles.js')
+const jwt = require('jsonwebtoken')
 
 const signup = async (req, res, next) => {
     try {
@@ -27,20 +28,34 @@ const signup = async (req, res, next) => {
             id : uuidv4(),
             id_user : userId
         }
-        console.log(userData)
-        const user = await userQuery.signup(userData)
-        if (user.affectedRows > 0) {
-            const account = await accountQuery.createAccount(accountData)
-            const results = {
-                user : user,
-                account : account
+        const findEmail = await userQuery.findUserEmail(username, email)
+        if (findEmail.length === 0) {
+            const newUser = await userQuery.signup(userData)
+            const newAccount = await accountQuery.createAccount(accountData)
+            if (newUser.affectedRows > 0) {
+                const secretKey = process.env.SECRET_KEY
+                const results = {
+                    newUser : newUser,
+                    account : newAccount,
+                }
+                const payload = {
+                    username : username,
+                    email : email
+                }
+                const verifyOptions = {
+                    expiresIn : 60 * 60
+                }
+                const token = jwt.sign(payload, secretKey, verifyOptions);
+                results.token = token
+                commonHelper.response(res, results, 200, `New User is created with username : ${username}`)
+                commonHelper.sendEmailVerification(email, token)
             }
-            commonHelper.response(res, results, 200, `New User is created with username : ${username}`)
+        } else {
+            return next(createError(403, `Email is already existed. Please choose another email to signup.`))
         }
     } catch (error) {
         console.log(error)
-        const err = new createError.InternalServerError()
-        next(err)
+        next(createError(500, new createError.InternalServerError()));
     }
 }
 
