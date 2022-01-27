@@ -10,13 +10,17 @@ CREATE TABLE users (id VARCHAR(64) NOT NULL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL, 
     last_name VARCHAR(50) NOT NULL,
     phone_number VARCHAR(15) NOT NULL,
-    profile_picture BLOB NULL,
+    profile_picture VARCHAR(128) NULL,
+    role VARCHAR(64) NOT NULL DEFAULT 'user',
+    active TINYINT(1) NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL);
 
 CREATE TABLE accounts (id VARCHAR(64) NOT NULL PRIMARY KEY,
     id_user VARCHAR(64) NOT NULL, 
     balance INT(10) NOT NULL DEFAULT 0,
+    income INT(10) NOT NULL DEFAULT 0,
+    outcome INT(10) NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL,
     FOREIGN KEY (id_user) REFERENCES users(id)
@@ -28,27 +32,16 @@ CREATE TABLE transactions (id VARCHAR(64) NOT NULL PRIMARY KEY,
     amount INT(10) NOT NULL DEFAULT 0, 
     transaction_type VARCHAR(50) NOT NULL,
     notes TEXT NULL,
-    status TINYINT(1) NOT NULL DEFAULT 0,
+    status VARCHAR(10) NOT NULL DEFAULT 'PENDING',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NULL,
     FOREIGN KEY (from_user_id) REFERENCES users(id)
     ON DELETE RESTRICT);
 
--- CREATE TABLE transaction_details (id VARCHAR(64) NOT NULL PRIMARY KEY)
+SELECT transactions.invoice, transactions.id_sender,transactions.id_receiver, IF(transactions.id_sender = ${idUser}, u1.username, u2.username) as username,  IF(transactions.id_sender = ${idUser}, u1.picURL, u2.picURL) as picURL, transactions.type, transactions.amount, transactions.notes, transactions.created_at FROM transactions INNER JOIN users u1 ON (u1.id = transactions.id_receiver) INNER JOIN users u2 ON (u2.id = transactions.id_sender) WHERE (id_sender=${idUser} OR id_receiver=${idUser}) ORDER BY created_at ${orderQuery} LIMIT ${limitQuery}
 
-
--- SELECT accounts.id, accounts.id_user, users.username, accounts.account_number, contact_holder.id_user_holder 
---     FROM accounts INNER JOIN users ON accounts.id_user = users.id 
---     INNER JOIN contact_holder ON accounts.id_user = contact_holder.id_user_holder;
-
-
--- search user with name
--- SELECT users.id, accounts.id AS id_accounts, users.email, profiles.first_name, profiles.last_name 
---     FROM users INNER JOIN profiles ON users.id = profiles.id_user 
---     INNER JOIN accounts ON users.id = accounts.id_user WHERE profiles.first_name LIKE '%ua%';
-
--- sort transactions by created_at
--- SELECT users.username, transactions.from_account_id, transactions.to_account_id, transactions.amount, transactions.created_at 
---     FROM users INNER JOIN accounts ON users.id = accounts.id_user 
---     INNER JOIN transactions ON accounts.id = transactions.from_account_id 
---     ORDER BY created_at DESC;
+SELECT transactions.id, transactions.from_user_id, transactions.to_user_id, IF(transactions.from_user_id='${userId}', 
+            user1.first_name, user2.first_name) AS first_name, IF(transactions.from_user_id=${userId} , user1.profile_picture, user2.profile_picture) 
+            AS profile_picture, transactions.transaction_type, transactions.amount, transactions.notes, transactions.status, transactions.created_at 
+            FROM transactions INNER JOIN users user1 ON (user1.id = transactions.to_user_id) INNER JOIN users user2 ON (user2.id = transactions.from_user_id) 
+            WHERE (from_user_id=${userId} OR to_user_id=${userId}) ORDER BY created_at

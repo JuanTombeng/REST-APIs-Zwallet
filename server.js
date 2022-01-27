@@ -3,19 +3,14 @@ const morgan = require('morgan');
 require('dotenv').config()
 const app = express();
 const PORT = process.env.PORT || 4000;
-
-const commonHelper = require('./src/helper/common.js')
-const userRouter = require('./src/routes/users.js')
-const accountRouter = require('./src/routes/accounts.js')
-const transactionRouter = require('./src/routes/transactions.js')
+const commonHelper = require('./src/v1/helper/common')
+const version1 = require('./src/v1/routes')
 const cors = require('cors')
 
 app.use(express.json());
 app.use(morgan('dev'))
 app.use(cors())
-app.use('/users', userRouter)
-app.use('/accounts', accountRouter)
-app.use('/transactions', transactionRouter)
+app.use('/v1', version1)
 
 // URL not Found handler
 app.use(commonHelper.handleURLNotFound)

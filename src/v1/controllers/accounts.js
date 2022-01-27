@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const commonHelper = require('../helper/common.js')
+const commonHelper = require('../helper/common')
 const accountQuery = require('../models/accounts.js')
 
 
