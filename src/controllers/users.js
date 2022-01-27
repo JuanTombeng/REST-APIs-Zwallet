@@ -4,8 +4,6 @@ const createError = require('http-errors')
 const commonHelper = require('../helper/common.js')
 const userQuery = require('../models/users.js')
 const accountQuery = require('../models/accounts.js')
-const profileQuery = require('../models/profiles.js')
-const jwt = require('jsonwebtoken')
 
 const signup = async (req, res, next) => {
     try {
@@ -33,19 +31,16 @@ const signup = async (req, res, next) => {
             const newUser = await userQuery.signup(userData)
             const newAccount = await accountQuery.createAccount(accountData)
             if (newUser.affectedRows > 0) {
-                const secretKey = process.env.SECRET_KEY
                 const results = {
                     newUser : newUser,
                     account : newAccount,
                 }
+                
                 const payload = {
                     username : username,
                     email : email
                 }
-                const verifyOptions = {
-                    expiresIn : 60 * 60
-                }
-                const token = jwt.sign(payload, secretKey, verifyOptions);
+                const token = commonHelper.generateToken(payload);
                 results.token = token
                 commonHelper.sendEmailVerification(email, token)
             }
@@ -58,19 +53,6 @@ const signup = async (req, res, next) => {
     }
 }
 
-// const updateVerifiedUser = async (req, res, next) => {
-//     try {
-//         const username = req.username
-//         const email = req.email
-//         const result = await userQuery.updateVerifiedUser(username, email)
-//         commonHelper.response(res, result, 200, `User with username ${username} is verified`)
-//         res.redirect('http://localhost:3000/login')
-//     } catch (error) {
-//         console.log(error)
-//         next(createError(500, new createError.InternalServerError()));
-//     }
-// }
-
 const login = async (req, res, next) => {
     try {
         const {email, password} = req.body
@@ -78,13 +60,25 @@ const login = async (req, res, next) => {
             email : email,
             password : password
         }
-        const findUser = await userQuery.login(data)
-        const checkPassword = await bcrypt.compare(password, findUser[0].password)
-        console.log(findUser);
-        if (checkPassword) {
-            commonHelper.response(res, findUser, 200, `Login is Successful! Welcome back ${findUser[0].username}`)
-        } else {
-            commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
+        const findEmailUser = await userQuery.findUserEmailLogin(email)
+        if (findEmailUser.length === 0) {
+            commonHelper.response(res, `Login Failed`, 500, `Sorry, We cannot find your email! Please try again.`)
+        } else if (findEmailUser[0].email === email) {
+            const findUser = await userQuery.login(data)
+            if (findUser[0].active === 1 && findUser[0].role === `user`) {
+                const checkPassword = await bcrypt.compare(password, findUser[0].password)
+                if (checkPassword) {
+                    const payload = {
+                        email : findUser[0].email,
+                        role : findUser[0].role
+                    }
+                    const token = commonHelper.generateToken(payload)
+                    findUser[0].token = token
+                    commonHelper.response(res, findUser, 200, `Login is Successful! Welcome back ${findUser[0].username}`)
+                } else {
+                    commonHelper.response(res, `Login Failed`, 500, `Sorry, your password is wrong! Please try again.`)
+                }
+            }
         }
     } catch (error) {
         commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)

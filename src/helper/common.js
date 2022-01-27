@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 
 const handleURLNotFound = (req, res, next) => {
@@ -16,6 +17,16 @@ const response = (res, result, status, message, error, pagination)=>{
     error : error || null,
     pagination : pagination
   })
+}
+
+const generateToken = (payload) => {
+  const secretKey = process.env.SECRET_KEY
+  const verifyOptions = {
+    expiresIn : 60 * 60,
+    issuer : 'zwallet'
+  }
+  const result = jwt.sign(payload, secretKey, verifyOptions)
+  return result
 }
 
 const sendEmailVerification = async (emailTarget, token) => {
@@ -449,5 +460,6 @@ const sendEmailVerification = async (emailTarget, token) => {
 module.exports = {
     handleURLNotFound,
     response,
+    generateToken,
     sendEmailVerification
 }
