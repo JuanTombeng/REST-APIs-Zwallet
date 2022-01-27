@@ -42,9 +42,22 @@ const updateVerifiedUser = (username, email) => {
 const login = (data) => {
     return new Promise ((resolve, reject) => {
         const findUserQuery = `SELECT users.id, users.first_name, users.last_name, users.email, users.password, users.pin,
-        accounts.id AS id_account FROM users INNER JOIN accounts ON users.id = accounts.id_user 
+        users.active, users.role, accounts.id AS id_account FROM users INNER JOIN accounts ON users.id = accounts.id_user 
         WHERE users.email = ?`
         connection.query(findUserQuery, data.email, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const findUserEmailLogin = (email) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT email from users WHERE email = ?`
+        connection.query(sql, email, (error, result) => {
             if (!error) {
                 resolve(result)
             } else {
@@ -137,6 +150,7 @@ module.exports = {
     findUserEmail,
     updateVerifiedUser,
     login,
+    findUserEmailLogin,
     getUsers,
     getUserDetails,
     countUsers,
