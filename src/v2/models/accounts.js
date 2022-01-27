@@ -1,4 +1,4 @@
-const connection = require('../config/dbConfig.js')
+const connection = require('../configDatabase/dbConfig')
 
 const createAccount = (data) => {
     return new Promise ((resolve, reject) => {
