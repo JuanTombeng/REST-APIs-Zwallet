@@ -9,8 +9,4 @@ route.use('/users', userRouter)
 route.use('/accounts', accountRouter)
 route.use('/transactions', transactionRouter)
 
-// app.use('/users', userRouter)
-// app.use('/accounts', accountRouter)
-// app.use('/transactions', transactionRouter)
-
 module.exports = route
