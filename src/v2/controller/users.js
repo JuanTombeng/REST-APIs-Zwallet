@@ -4,6 +4,7 @@ const createError = require('http-errors')
 const commonHelper = require('../helper/common')
 const userQuery = require('../models/users')
 const accountQuery = require('../models/accounts')
+const client = require('../config/redis')
 
 const signup = async (req, res, next) => {
     try {
@@ -101,11 +102,24 @@ const uploadProfilePicture = async (req, res, next) => {
     }
 }
 
-
+const getUserDetails = async (req, res, next) => {
+    try {
+        const {email, role, active} = req.decoded
+        if (active === 1) {
+            const result = await userQuery.getUserDetails(email, role)
+            await client.setEx('user/:email', 60 * 60, JSON.stringify(result))
+            commonHelper.response(res, result, 200, `User ${email} details:`, null)
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
 
 
 module.exports = {
     signup,
     login,
-    uploadProfilePicture
+    uploadProfilePicture,
+    getUserDetails
 }
