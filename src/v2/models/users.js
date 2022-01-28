@@ -81,6 +81,20 @@ const getUserDetails = (userId) => {
     })
 }
 
+const uploadUserProfilePicture = (email, role, profile_picture) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET profile_picture = ? WHERE email = ? AND role = ?`
+        connection.query(sql, [email, role, profile_picture], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+
 
 module.exports = {
     signup,
@@ -88,5 +102,6 @@ module.exports = {
     updateVerifiedUser,
     login,
     findUserEmailLogin,
-    getUserDetails
+    getUserDetails,
+    uploadUserProfilePicture
 }

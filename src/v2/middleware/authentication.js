@@ -16,7 +16,7 @@ const userTokenVerification = async (req, res, next) => {
         }
         const secretKey = process.env.SECRET_KEY
         const decoded = jwt.verify(token, secretKey, verifyOptions)
-        req.email = decoded.email
+        req.decoded = decoded
         next()
     } catch (error) {
         if (error && error.name === `JsonWebTokenError`) {

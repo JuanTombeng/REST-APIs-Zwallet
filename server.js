@@ -14,6 +14,7 @@ app.use(morgan('dev'))
 app.use(cors())
 app.use('/v1', version1)
 app.use('/v2', version2)
+app.use('/file', express.static('./src/uploads'))
 
 // URL not Found handler
 app.use(commonHelper.handleURLNotFound)

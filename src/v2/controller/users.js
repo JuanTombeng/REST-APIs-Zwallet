@@ -84,8 +84,28 @@ const login = async (req, res, next) => {
     }
 }
 
+const uploadProfilePicture = async (req, res, next) => {
+    try {
+        const { email, role, active} = req.decoded
+        const fileName = req.file.filename
+        const profile_picture = `${process.env.BASE_URL}/file/${fileName}`
+        if (active === 1) {
+            const result = await userQuery.uploadUserProfilePicture(email, role, profile_picture)
+            commonHelper.response(res, result, 200, `User ${email}'s profile picture is updated.`, null)
+        } else {
+            next(createError(500, 'Your account is not yet active. Please verify your account first'))
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
+
+
 
 module.exports = {
     signup,
-    login
+    login,
+    uploadProfilePicture
 }
