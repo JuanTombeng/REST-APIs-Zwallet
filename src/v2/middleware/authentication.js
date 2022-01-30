@@ -53,7 +53,24 @@ const emailTokenVerification = async (req, res, next) => {
     }
 }
 
+const resetPasswordEmailTokenVerification = async (req, res, next) => {
+    try {
+        const emailToken = req.params.token
+        const secretKey = process.env.SECRET_KEY
+        const verifyOptions = {
+            issuer : 'zwallet'
+        }
+        const decoded = jwt.verify(emailToken, secretKey, verifyOptions)
+        req.decoded = decoded
+        next()
+        res.redirect('http://localhost:3000/reset-password-form')
+    } catch (error) {
+        
+    }
+}
+
 module.exports = {
     userTokenVerification,
-    emailTokenVerification
+    emailTokenVerification,
+    resetPasswordEmailTokenVerification
 }

@@ -50,7 +50,30 @@ const transactionInputValidation = (req, res, next) => {
     }
 }
 
+const resetPasswordValidation = (req, res, next) => {
+    const {password, confirmPassword} = req.body
+    const validateData = Joi.object({
+        password : Joi.string().min(8).max(16).alphanum().required(),
+        confirmPassword : Joi.string().min(8).max(16).alphanum().required(),
+    })
+    const {error} = validateData.validate({
+        password : password,
+        confirmPassword : confirmPassword
+    })
+    if (error) {
+        const errorMessage = error.details[0].message
+        return next(createError(422, errorMessage))
+    } else {
+        if (password !== confirmPassword) {
+            return next(createError(400, 'Password and Confirm Password is not match'))
+        } 
+        next()
+    }
+
+}
+
 module.exports = {
     userInputValidation,
-    transactionInputValidation
+    transactionInputValidation,
+    resetPasswordValidation
 }

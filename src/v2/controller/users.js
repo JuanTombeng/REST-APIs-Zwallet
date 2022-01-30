@@ -86,6 +86,40 @@ const login = async (req, res, next) => {
     }
 }
 
+const resetUserPasswordEmailForm = async (req, res, next) => {
+    try {
+        const {email} = req.body
+        const payload = {
+            email : email
+        }
+        const token = commonHelper.generateToken(payload)
+        commonHelper.sendEmailResetPasswordVerification(email, token)
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
+const resetUserPassword = async (req, res, next) => {
+    try {
+        const {email} = req.decoded
+        const {password} = req.body
+        const [user] = await userQuery.getStatusByEmail(email)
+        if (user.active === 1 && user.role === 'user') {
+            const salt = await bcrypt.genSalt()
+            const hashedPassword = await bcrypt.hash(password, salt)
+            const result = await userQuery.resetUserPassword(hashedPassword, email, user.id)
+            commonHelper.response(res, result, 200, `User ${email} reset password is completed`)
+            res.redirect('http://localhost:3000/login')
+        } else {
+            commonHelper.response(res, `Login Failed`, 500, `Sorry, your accoutn is not yet activated.`)
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
 const uploadProfilePicture = async (req, res, next) => {
     try {
         const { email, role, active} = req.decoded
@@ -121,6 +155,8 @@ const getUserDetails = async (req, res, next) => {
 module.exports = {
     signup,
     login,
+    resetUserPasswordEmailForm,
+    resetUserPassword,
     uploadProfilePicture,
     getUserDetails
 }
