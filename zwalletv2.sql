@@ -43,3 +43,17 @@ CREATE TABLE transactions (
     FOREIGN KEY (from_user_id) REFERENCES users(id)
     ON DELETE RESTRICT
 );
+
+CREATE TABLE contact_groups (
+    id VARCHAR(64) NOT NULL PRIMARY KEY, 
+    user_holder_id VARCHAR(64) NOT NULL, 
+    total_member INT(10) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE contact_members (
+    id VARCHAR(64) NOT NULL PRIMARY KEY, 
+    contact_groups_id VARCHAR(64) NOT NULL, 
+    id_user VARCHAR(64) NOT NULL, 
+    FOREIGN KEY (contact_groups_id) REFERENCES contact_groups(id)
+    ON DELETE RESTRICT
+);
