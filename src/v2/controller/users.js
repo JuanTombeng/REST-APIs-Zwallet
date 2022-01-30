@@ -108,7 +108,7 @@ const getUserDetails = async (req, res, next) => {
         const {email, role, active} = req.decoded
         if (active === 1) {
             const result = await userQuery.getUserDetails(email, role)
-            await client.setEx('user/:email', 60 * 60, JSON.stringify(result))
+            await client.setEx(`user/:${email}`, 60 * 60, JSON.stringify(result))
             commonHelper.response(res, result, 200, `User ${email} details:`, null)
         }
     } catch (error) {

@@ -94,6 +94,32 @@ const uploadUserProfilePicture = (email, role, profile_picture) => {
     })
 }
 
+const getUserIdByToken = (email, role) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT id FROM users WHERE email = ? AND role = ?`
+        connection.query(sql, [email, role], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const getUserIdByPhoneNumber = (phone_number) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT id, first_name, last_name, profile_picuture FROM users WHERE phone_number = ?`
+        connection.query(sql, phone_number, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 
 
 module.exports = {
@@ -103,5 +129,7 @@ module.exports = {
     login,
     findUserEmailLogin,
     getUserDetails,
-    uploadUserProfilePicture
+    uploadUserProfilePicture,
+    getUserIdByToken,
+    getUserIdByPhoneNumber
 }
