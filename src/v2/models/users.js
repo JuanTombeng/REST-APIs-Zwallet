@@ -84,7 +84,7 @@ const getUserDetails = (email, role) => {
 const uploadUserProfilePicture = (email, role, profile_picture) => {
     return new Promise ((resolve, reject) => {
         const sql = `UPDATE users SET profile_picture = ? WHERE email = ? AND role = ?`
-        connection.query(sql, [email, role, profile_picture], (error, result) => {
+        connection.query(sql, [profile_picture, email, role], (error, result) => {
             if (!error) {
                 resolve(result)
             } else {

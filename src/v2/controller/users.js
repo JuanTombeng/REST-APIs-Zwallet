@@ -71,8 +71,8 @@ const login = async (req, res, next) => {
                         active : userLogin[0].active
                     }
                     const token = commonHelper.generateToken(payload)
-                    userLogin.token = token
-                    commonHelper.response(res, userLogin, 200, `Login is Successful! Welcome back ${findUser[0].username}`)
+                    userLogin[0].token = token
+                    commonHelper.response(res, userLogin, 200, `Login is Successful! Welcome back ${userLogin[0].username}`)
                 } else {
                     commonHelper.response(res, `Login Failed`, 500, `Sorry, your password is wrong! Please try again.`)
                 }
@@ -81,6 +81,7 @@ const login = async (req, res, next) => {
             }
         }
     } catch (error) {
+        console.log(error)
         commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
     }
 }
