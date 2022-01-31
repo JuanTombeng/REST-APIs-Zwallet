@@ -130,7 +130,7 @@ const sendEmailVerification = async (emailTarget, token) => {
     console.log(info)
 }
 
-const sendEmailResetPasswordVerification = (emailTarget, token) => {
+const sendEmailResetPasswordVerification = async (emailTarget, token) => {
     const transporter = nodemailer.createTransport({
         host : `smtp.gmail.com`,
         port : 465,
@@ -143,7 +143,7 @@ const sendEmailResetPasswordVerification = (emailTarget, token) => {
     const info = await transporter.sendMail({
         from : `mail.zwallet@gmail.com`,
         to : emailTarget,
-        subject : `Zwallet User Registration Verification`,
+        subject : `Zwallet Reset Password Email Verification`,
         html : 
             `
             <!DOCTYPE html>
@@ -212,14 +212,14 @@ const sendEmailResetPasswordVerification = (emailTarget, token) => {
             <body>
                 <div class="container">
                     <h1 class="title">
-                        Welcome to Zwallet!
+                        Zwallet - Reset Password
                     </h1>
                     <hr />
                     <div class="parag">
-                        Thank you for signin up with us! To continue the signin process, please click the button "Confirm" below to verify you account!
+                        Please do NOT share this to other people! To continue the reset password process, please click the button "Continue" below to verify your email!
                     </div>
                     <div class="confirm">
-                        <a href="http://localhost:4000/v2/users/email-reset-password-verification/${token}" target="_blank"><button class="form-button">CONFIRM</button></a>
+                        <a href="http://localhost:3000/reset-password/${token}" target="_blank"><button class="form-button">Continue</button></a>
                     </div>
                 </div>
             </body>
