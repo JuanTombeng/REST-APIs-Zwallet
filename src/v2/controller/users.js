@@ -80,8 +80,8 @@ const login = async (req, res, next) => {
                 commonHelper.response(res, `Login Failed`, 500, `Sorry, your accoutn is not yet activated.`)
             }
         }
-    } catch (error) {
-        console.log(error)
+    } catch (err) {
+        console.log(err)
         commonHelper.response(res, `Login Failed`, 500, `Sorry, your username or password is wrong! Please try again.`)
     }
 }
