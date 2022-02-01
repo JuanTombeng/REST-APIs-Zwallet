@@ -78,7 +78,46 @@ const getContactList = async (req, res, next) => {
     }
 }
 
+const getContactMemberDetail = async (req, res, next) => {
+    try {
+        const {email, role, active} = req.decoded
+        const userTargetID = req.params.id
+        if (active === 1) {
+            const [userHolderId] = await userQuery.getUserIdByToken(email, role)
+            const contactMemberDetail = await contactQuery.getContactMemberDetail(userTargetID, userHolderId.id)
+            await client.setEx(`contact-member-detail/:${userTargetID}`, 60 * 60, JSON.stringify(contactMemberDetail))
+            commonHelper.response(res, contactMemberDetail, `Contact member ${userTargetID} of group ${userHolderId.id} detail:`)
+        } else {
+            return next(createError(400, 'Your account is not yet active'))
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
+const deleteContactMember = async (req, res, next) => {
+    try {
+        const {email, role, active} = req.decoded
+        const {id} = req.body
+        if (active === 1) {
+            const [user] = await userQuery.getUserIdByToken(email, role)
+            const [contactGroupId] = await contactQuery.getContactGroupId(user.id)
+            const [userTarget] = await contactQuery.getContactMemberDetail(id, user.id)
+            const result =  await contactQuery.deleteContactMember(contactGroupId.id, id)
+            commonHelper.response(res, result, 200, `contact member ${userTarget.first_name} ${userTarget.last_name} is deleted`, null)
+        } else {
+            return next(createError(400, 'Your account is not yet active'))
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
 module.exports = {
     addContactList,
-    getContactList
+    getContactList,
+    getContactMemberDetail,
+    deleteContactMember
 }
