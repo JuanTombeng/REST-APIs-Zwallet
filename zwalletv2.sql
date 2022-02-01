@@ -30,6 +30,17 @@ CREATE TABLE accounts (
     ON DELETE CASCADE
 );
 
+CREATE TABLE top_up_history (
+    id VARCHAR(64) NOT NULL PRIMARY KEY, 
+    id_user VARCHAR(64) NOT NULL, 
+    amount INT(10) NOT NULL DEFAULT 0,
+    method VARCHAR(64) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL,
+    FOREIGN KEY (id_user) REFERENCES users(id)
+    ON DELETE CASCADE
+);
+
 CREATE TABLE transactions (
     id VARCHAR(64) NOT NULL PRIMARY KEY, 
     from_user_id VARCHAR(64) NOT NULL, 

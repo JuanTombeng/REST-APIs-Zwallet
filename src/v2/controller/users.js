@@ -77,7 +77,7 @@ const login = async (req, res, next) => {
                     commonHelper.response(res, `Login Failed`, 500, `Sorry, your password is wrong! Please try again.`)
                 }
             } else {
-                commonHelper.response(res, `Login Failed`, 500, `Sorry, your accoutn is not yet activated.`)
+                commonHelper.response(res, `Login Failed`, 500, `Sorry, your account is not yet activated.`)
             }
         }
     } catch (err) {
@@ -144,6 +144,47 @@ const getUserDetails = async (req, res, next) => {
             const result = await userQuery.getUserDetails(email, role)
             await client.setEx(`user/:${email}`, 60 * 60, JSON.stringify(result))
             commonHelper.response(res, result, 200, `User ${email} details:`, null)
+        } else {
+            next(createError(500, 'Your account is not yet active. Please verify your account first'))
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
+const updateUserDetails = async (req, res, next) => {
+    try {
+        const {email, role, active} = req.decoded
+        const {first_name, last_name, phone_number} = req.body
+        const userData = {
+            first_name : first_name,
+            last_name : last_name,
+            phone_number : phone_number
+        }
+        if (active === 1) {
+            const result = await userQuery.updateUserDetail(userData, email, active, role)
+            await client.setEx(`user/:${email}`, 60 * 60, JSON.stringify(result))
+            commonHelper.response(res, result, 200, `User ${email} is updated`, null)
+        } else {
+            next(createError(500, 'Your account is not yet active. Please verify your account first'))
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()))
+    }
+}
+
+const deleteUser = async (req, res, next) => {
+    try {
+        const {role, active} = req.decoded
+        const {id} = req.body
+        if (active === 1 && role === 'admin') {
+            const result = await userQuery.deleteUser(id)
+            commonHelper.response(res, result, 200, `User ${id} is deleted`, null)
+        } else {
+            res.redirect('http://localhost:3000/login')
+            return next(createError(400, 'You are not authorized to continue'))
         }
     } catch (error) {
         console.log(error)
@@ -158,5 +199,7 @@ module.exports = {
     resetUserPasswordEmailForm,
     resetUserPassword,
     uploadProfilePicture,
-    getUserDetails
+    getUserDetails,
+    updateUserDetails,
+    deleteUser
 }
