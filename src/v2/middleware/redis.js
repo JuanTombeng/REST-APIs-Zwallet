@@ -23,6 +23,7 @@ const hitCacheUserListByList = async (req, res, next) => {
 
 const clearRedisUser = (req, res, next) => {
     client.del('user')
+    client.del('contact-list')
     next()
 }
 
