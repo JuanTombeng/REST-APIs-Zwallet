@@ -1,15 +1,13 @@
-const bcrypt = require('bcrypt')
 const { v4 : uuidv4 } = require('uuid')
 const createError = require('http-errors')
 const commonHelper = require('../helper/common')
 const userQuery = require('../models/users')
 const accountQuery = require('../models/accounts')
-const client = require('../config/redis')
 
 const topUpAccountBalance = async (req, res, next) => {
     try {
         const {email, role, active} = req.decoded
-        const {amount, pin} = req.body
+        const {amount, topUpMethod, pin} = req.body
         if (active === 1) {
             const [user] = await userQuery.getUserIdByToken(email, role)
             const [pinVerification] = await userQuery.getUserPin(email, user.id)
@@ -20,7 +18,23 @@ const topUpAccountBalance = async (req, res, next) => {
                     income : accountDetail.income + amount
                 }
                 const result = await accountQuery.topUpAccountBalance(topupData, user.id)
-                commonHelper.response(res, result, 200, `User ${email} is succesfully adding ${amount} to their account`)
+                if (result.affectedRows > 0) {
+                    const topUpId = uuidv4()
+                    const topUpHistoryData = {
+                        id : topUpId,
+                        id_user : user.id,
+                        amount : amount,
+                        method : topUpMethod
+                    }
+                    const topUpHistory = await accountQuery.topUpHistory(topUpHistoryData)
+                    const results = {
+                        topUpAccount : result,
+                        topUpHistory : topUpHistory
+                    }
+                    commonHelper.response(res, results, 200, `User ${email} is succesfully adding ${amount} to their account`)
+                } else {
+                    return next(createError(403, 'Top Up process is failed'))
+                }
             } else {
                 return next(createError(403, 'PIN is incorrect'))
             }

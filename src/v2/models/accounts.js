@@ -26,6 +26,19 @@ const topUpAccountBalance = (data, userId) => {
     })
 }
 
+const addTopUpHistory = (data) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `INSERT INTO top_up_history SET ?`
+        connection.query(sql, data, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 const getAccountDetail = (userId) => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT balance, income FROM accounts WHERE id_user = ?`
@@ -43,5 +56,6 @@ const getAccountDetail = (userId) => {
 module.exports = {
     createAccount,
     topUpAccountBalance,
+    addTopUpHistory,
     getAccountDetail
 }
