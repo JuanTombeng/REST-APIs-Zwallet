@@ -159,6 +159,32 @@ const getStatusByEmail = (email) => {
     })
 }
 
+const updateUserDetail = (data, email, active, role) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET ? WHERE email = ? AND active = ? AND role = ?`
+        connection.query(sql, [data, email, active, role], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const deleteUser = (userId) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `DELETE FROM users WHERE id = ?`
+        connection.query(sql, userId, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
 
 
 module.exports = {
@@ -173,5 +199,7 @@ module.exports = {
     getUserIdByPhoneNumber,
     getUserPin,
     resetUserPassword,
-    getStatusByEmail
+    getStatusByEmail,
+    updateUserDetail,
+    deleteUser
 }
