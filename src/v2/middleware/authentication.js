@@ -16,9 +16,9 @@ const isAdmin = async (req, res, next) => {
         }
         const secretKey = process.env.SECRET_KEY
         const decoded = jwt.verify(token, secretKey, verifyOptions)
-        if (decoded.role === 'admin') {
-            res.redirect('http://localhost:3000/login')
-            return next(createError(400, 'You are not authorized to continue'))
+        console.log(decoded.role)
+        if (decoded.role !== 'admin') {
+            next(createError(400, 'You are not authorized to continue'))
         } else {
             req.decoded = decoded
             next()

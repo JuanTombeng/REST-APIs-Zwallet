@@ -183,6 +183,11 @@ const sendEmailResetPasswordVerification = async (emailTarget, token) => {
                         text-align: start;
                         padding: 20px 50px 0 50px;
                         line-height: 30px;
+                        margin: 0;
+                        position: absolute;
+                        top: 50%;
+                        -ms-transform: translateY(-50%);
+                        transform: translateY(-50%);
                     }
                     .confirm {
                         text-align: center;
@@ -190,6 +195,11 @@ const sendEmailResetPasswordVerification = async (emailTarget, token) => {
                         padding: 20px 50px 0 50px;
                         line-height: 30px;
                         height: 200px;
+                        margin: 0;
+                        position: absolute;
+                        top: 50%;
+                        -ms-transform: translateY(-50%);
+                        transform: translateY(-50%);
                     }
                     .form-button {
                         text-align: center;
