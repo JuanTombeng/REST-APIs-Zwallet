@@ -6,6 +6,7 @@ const authenticator = require('../middleware/authentication')
 
 route.post('/create', authenticator.userTokenVerification, transactionController.createTransaction)
 route.post('/topup', authenticator.userTokenVerification, topUpController.topUpAccountBalance)
+route.get('/topup/history', authenticator.userTokenVerification, topUpController.getTopUpHistory)
 route.get('/transaction-history', authenticator.userTokenVerification, transactionController.getTransactionsHistory)
 route.put('/update:id', authenticator.isAdmin, transactionController.updateTransaction)
 
