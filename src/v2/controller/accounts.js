@@ -45,7 +45,21 @@ const topUpAccountBalance = async (req, res, next) => {
     }
 }
 
+const getTopUpHistory = async (req, res, next) => {
+    try {
+        const {email, role, active} = req.decoded
+        if (active === 1) {
+            const [user] = await userQuery.getUserIdByToken(email, role)
+            const result = await accountQuery.getTopUpHistory(user.id)
+            commonHelper.response(res, result, 200, `User ${email} top up history`, null)
+        }
+    } catch (error) {
+        
+    }
+}
+
 
 module.exports = {
-    topUpAccountBalance
+    topUpAccountBalance,
+    getTopUpHistory
 }
