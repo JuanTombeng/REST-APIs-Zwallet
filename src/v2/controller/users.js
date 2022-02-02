@@ -40,6 +40,7 @@ const signup = async (req, res, next) => {
                 const token = commonHelper.generateToken(payload)
                 results.token = token
                 console.log(token)
+                commonHelper.response(res, `Pending`, 200, `Please check your email, a verification email has been send to verfity your email`)
                 commonHelper.sendEmailVerification(email, token)
             }
         } else {
@@ -63,7 +64,7 @@ const login = async (req, res, next) => {
             commonHelper.response(res, `Login Failed`, 500, `Sorry, We cannot find your email! Please try again.`)
         } else if (findEmailUser[0].email === data.email) {
             const userLogin = await userQuery.login(data)
-            if (userLogin[0].active === 1 && userLogin[0].role === 'user') {
+            if (userLogin[0].active === 1) {
                 const checkPassword = await bcrypt.compare(data.password, userLogin[0].password)
                 if (checkPassword) {
                     const payload = {
@@ -94,6 +95,7 @@ const resetUserPasswordEmailForm = async (req, res, next) => {
             email : email
         }
         const token = commonHelper.generateToken(payload)
+        commonHelper.response(res, `Pending`, 200, `Please check your email, a verification email has been send to reset your password`)
         commonHelper.sendEmailResetPasswordVerification(email, token)
     } catch (error) {
         console.log(error)
