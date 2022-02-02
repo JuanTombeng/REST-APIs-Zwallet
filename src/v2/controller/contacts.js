@@ -64,11 +64,31 @@ const addContactList = async (req, res, next) => {
 const getContactList = async (req, res, next) => {
     try {
         const {email, role, active} = req.decoded
+        const search = req.query.name
+        const sort = req.query.sort || 'desc'
+        const order = req.query.order || 'created_at'
+        const page = parseInt(req.query.page) || 1
+        const limit = parseInt(req.query.limit) || 2
+        const offset = (page - 1) * limit
         if (active === 1) {
             const [userHolderId] = await userQuery.getUserIdByToken(email, role)
-            const contactGroupList = await contactQuery.getContactGroup(userHolderId.id)
+            const contactGroupList = await contactQuery.getContactGroup({
+                id : userHolderId.id,
+                search : search,
+                sort : sort,
+                order : order,
+                offset : offset,
+                limit : limit
+            })
+            const memberCount = await contactQuery.getCountContactGroup(userHolderId.id)
+            const {total} = memberCount[0]
             await client.setEx(`contact-list/:${email}`, 60 * 60, JSON.stringify(contactGroupList))
-            commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`)
+            commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
+                curretPage : page,
+                limit : limit,
+                totalData : total,
+                totalPage : Math.ceil(total / limit)
+            })
         } else {
             return next(createError(400, 'Your account is not yet active'))
         }

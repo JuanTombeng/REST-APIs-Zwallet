@@ -52,12 +52,31 @@ const updateContactGroupTotal = (totalMember, groupId) => {
     })
 }
 
-const getContactGroup = (userHolderId) => {
+const getContactGroup = ({id, search, sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT contact_members.id_user, contact_groups.id, contact_groups.user_holder_id, 
+        let sql = `SELECT contact_members.id_user, contact_groups.id, contact_groups.user_holder_id, 
         contact_groups.total_member, users. id, users.first_name, users.last_name, users.phone_number, users.profile_picture 
         FROM contact_members INNER JOIN contact_groups ON contact_members.contact_groups_id = contact_groups.id 
-        INNER JOIN users ON contact_members.id_user = users.id WHERE contact_groups.user_holder_id = ?`
+        INNER JOIN users ON contact_members.id_user = users.id `
+        if (search) {
+            sql += `WHERE contact_groups.user_holder_id = ${id} AND users.first_name LIKE '%${search}%' 
+            ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
+        } else {
+            sql += `WHERE contact_groups.user_holder_id = '${id}' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
+        }
+        connection.query(sql, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const getCountContactGroup = (userHolderId) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT total_member FROM contact_groups WHERE user_holder_id = ?`
         connection.query(sql, userHolderId, (error, result) => {
             if (!error) {
                 resolve(result)
@@ -114,6 +133,7 @@ module.exports = {
     findContactGroup,
     updateContactGroupTotal,
     getContactGroup,
+    getCountContactGroup,
     getContactMemberDetail,
     deleteContactMember,
     getContactGroupId
