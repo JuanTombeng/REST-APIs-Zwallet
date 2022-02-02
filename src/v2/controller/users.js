@@ -39,6 +39,7 @@ const signup = async (req, res, next) => {
                 }
                 const token = commonHelper.generateToken(payload)
                 results.token = token
+                console.log(token)
                 commonHelper.sendEmailVerification(email, token)
             }
         } else {

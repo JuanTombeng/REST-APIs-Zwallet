@@ -55,8 +55,8 @@ const updateContactGroupTotal = (totalMember, groupId) => {
 const getContactGroup = (userHolderId) => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT contact_members.id_user, contact_groups.id, contact_groups.user_holder_id, 
-        contact_groups.total_member, users. id, users.first_name, users.last_name, users.phone_number, users.profile_picture, 
-        from contact_members INNER JOIN contact_groups ON contact_members.contact_groups_id = contact_groups.id 
+        contact_groups.total_member, users. id, users.first_name, users.last_name, users.phone_number, users.profile_picture 
+        FROM contact_members INNER JOIN contact_groups ON contact_members.contact_groups_id = contact_groups.id 
         INNER JOIN users ON contact_members.id_user = users.id WHERE contact_groups.user_holder_id = ?`
         connection.query(sql, userHolderId, (error, result) => {
             if (!error) {

@@ -72,7 +72,7 @@ const getTransactionsHistory = async (req, res, next) => {
         if (active === 1) {
             const [userSender] = await userQuery.getUserIdByToken(email, role)
             const result = await transactionQuery.getTransactionsHistory(userSender.id)
-            commonHelper.response(res, result, 200, `Transaction History of user : ${userId}.`)
+            commonHelper.response(res, result, 200, `Transaction History of user : ${userSender.id}.`)
         } else {
             return next(createError(400, 'Your account is not yet active'))
         }
@@ -86,7 +86,7 @@ const getTransactionsHistory = async (req, res, next) => {
 const updateTransaction = async (req, res, next) => {
     try {
         const transactionId = req.params.id
-        const {active, role}
+        const {active, role} = req.decoded
         const {from_account_id, to_account_id, amount} = req.body
         if (active === 1 && role === 'admin') {
             const transactionData = {

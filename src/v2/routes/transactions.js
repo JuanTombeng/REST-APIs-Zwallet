@@ -8,3 +8,5 @@ route.post('/create', authenticator.userTokenVerification, transactionController
 route.post('/topup', authenticator.userTokenVerification, topUpController.topUpAccountBalance)
 route.get('/transaction-history', authenticator.userTokenVerification, transactionController.getTransactionsHistory)
 route.put('/update:id', authenticator.isAdmin, transactionController.updateTransaction)
+
+module.exports = route

@@ -26,7 +26,7 @@ const topUpAccountBalance = async (req, res, next) => {
                         amount : amount,
                         method : topUpMethod
                     }
-                    const topUpHistory = await accountQuery.topUpHistory(topUpHistoryData)
+                    const topUpHistory = await accountQuery.addTopUpHistory(topUpHistoryData)
                     const results = {
                         topUpAccount : result,
                         topUpHistory : topUpHistory

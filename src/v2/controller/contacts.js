@@ -29,8 +29,8 @@ const addContactList = async (req, res, next) => {
                     user_holder_id : userHolderId[0].id,
                     total_member : 1
                 }
-                const addContactMember = await contactQuery.addContactMember(contactMemberData)
                 const createContactGroup = await contactQuery.addContactGroup(contactGroupData)
+                const addContactMember = await contactQuery.addContactMember(contactMemberData)
                 const results = {
                     addContactMember,
                     createContactGroup
@@ -107,7 +107,7 @@ const deleteContactMember = async (req, res, next) => {
             const result =  await contactQuery.deleteContactMember(contactGroupId.id, id)
             commonHelper.response(res, result, 200, `contact member ${userTarget.first_name} ${userTarget.last_name} is deleted`, null)
         } else {
-            return next(createError(400, 'Your account is not yet active'))
+            return next(createError(500, 'Your account is not yet active'))
         }
     } catch (error) {
         console.log(error)
