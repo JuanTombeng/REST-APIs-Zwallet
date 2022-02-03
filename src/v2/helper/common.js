@@ -120,7 +120,7 @@ const sendEmailVerification = async (emailTarget, token) => {
                         Thank you for signin up with us! To continue the signin process, please click the button "Confirm" below to verify you account!
                     </div>
                     <div class="confirm">
-                        <a href="http://localhost:4000/v2/users/email-verification/${token}" target="_blank"><button class="form-button">CONFIRM</button></a>
+                        <a href="${baseUrl}/${token}" target="_blank"><button class="form-button">CONFIRM</button></a>
                     </div>
                 </div>
             </body>
