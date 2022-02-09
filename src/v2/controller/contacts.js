@@ -103,10 +103,10 @@ const getContactMemberDetail = async (req, res, next) => {
         const {email, role, active} = req.decoded
         const userTargetID = req.params.id
         if (active === 1) {
-            const [userHolderId] = await userQuery.getUserIdByToken(email, role)
-            const contactMemberDetail = await contactQuery.getContactMemberDetail(userTargetID, userHolderId.id)
-            // await client.setEx(`contact-member-detail/:${userTargetID}`, 60 * 60, JSON.stringify(contactMemberDetail))
-            commonHelper.response(res, contactMemberDetail, `Contact member ${userTargetID} of group ${userHolderId.id} detail:`)
+            const [user] = await userQuery.getUserIdByToken(email, role)
+            const contactMemberDetail = await contactQuery.getContactMemberDetail(userTargetID, user.id)
+            await client.setEx(`contact-member-detail/:${userTargetID}`, 60 * 60, JSON.stringify(contactMemberDetail))
+            commonHelper.response(res, contactMemberDetail, 200, `Contact member ${userTargetID} of group ${user.id} detail:`, null)
         } else {
             return next(createError(400, 'Your account is not yet active'))
         }
