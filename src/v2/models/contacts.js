@@ -103,7 +103,7 @@ const getContactMemberDetail = (userTargetId, userHolderId) => {
 
 const deleteContactMember = (contact_groups_id, id_user) => {
     return new Promise ((resolve, reject) => {
-        const sql = `DELETE FROM users WHERE contact_groups_id = ? AND id_user = ?`
+        const sql = `DELETE FROM contact_members WHERE contact_groups_id = ? AND id_user = ?`
         connection.query(sql, [contact_groups_id, id_user], (error, result) => {
             if (!error) {
                 resolve(result)
