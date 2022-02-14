@@ -145,7 +145,7 @@ const getUserDetails = async (req, res, next) => {
         const {email, role, active} = req.decoded
         if (active === 1) {
             const result = await userQuery.getUserDetails(email, role)
-            await client.setEx(`user/:${email}`, 60 * 60, JSON.stringify(result))
+            await client.setEx(`user/${email}`, 60 * 60, JSON.stringify(result))
             commonHelper.response(res, result, 200, `User ${email} details:`, null)
         } else {
             next(createError(500, 'Your account is not yet active. Please verify your account first'))
@@ -167,7 +167,7 @@ const updateUserDetails = async (req, res, next) => {
         }
         if (active === 1) {
             const result = await userQuery.updateUserDetail(userData, email, active, role)
-            await client.setEx(`user/:${email}`, 60 * 60, JSON.stringify(result))
+            await client.setEx(`user/${email}`, 60 * 60, JSON.stringify(result))
             commonHelper.response(res, result, 200, `User ${email} is updated`, null)
         } else {
             next(createError(500, 'Your account is not yet active. Please verify your account first'))

@@ -17,7 +17,7 @@ const response = (res, result, status, message, error, pagination) => {
         data : result,
         message : message || null,
         error : error || null,
-        pagination : pagination
+        pagination : pagination || null
     })
 }
 

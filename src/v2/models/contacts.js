@@ -114,9 +114,22 @@ const deleteContactMember = (contact_groups_id, id_user) => {
     })
 }
 
-const getContactGroupId = (user_holder_id) => {
+const updateContactGroupTotalMember = (contact_groups_id, total_member) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT id FROM contact_groups WHERE user_holder_id = ?`
+        const sql = `UPDATE contact_groups SET total_member = ? WHERE id = ?`
+        connection.query(sql, [total_member, contact_groups_id], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const getContactGroupIdAndTotal = (user_holder_id) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT id, total_member FROM contact_groups WHERE user_holder_id = ?`
         connection.query(sql, user_holder_id, (error, result) => {
             if (!error) {
                 resolve(result)
@@ -136,5 +149,6 @@ module.exports = {
     getCountContactGroup,
     getContactMemberDetail,
     deleteContactMember,
-    getContactGroupId
+    updateContactGroupTotalMember,
+    getContactGroupIdAndTotal
 }
