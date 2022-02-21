@@ -4,7 +4,7 @@ const createError = require('http-errors')
 const commonHelper = require('../helper/common')
 const userQuery = require('../models/users')
 const contactQuery = require('../models/contacts')
-const client = require('../config/redis')
+// const client = require('../config/redis')
 
 const addContactList = async (req, res, next) => {
     try {
@@ -82,7 +82,8 @@ const getContactList = async (req, res, next) => {
             })
             const memberCount = await contactQuery.getCountContactGroup(userHolderId.id)
             const {total_member} = memberCount[0]
-            await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
+            // await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
+
             commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
                 currentPage : page,
                 limit : limit,
@@ -105,7 +106,7 @@ const getContactMemberDetail = async (req, res, next) => {
         if (active === 1) {
             const [user] = await userQuery.getUserIdByToken(email, role)
             const contactMemberDetail = await contactQuery.getContactMemberDetail(userTargetID, user.id)
-            await client.setEx(`contact-member-detail/${userTargetID}`, 60 * 60, JSON.stringify(contactMemberDetail))
+            // await client.setEx(`contact-member-detail/${userTargetID}`, 60 * 60, JSON.stringify(contactMemberDetail))
             commonHelper.response(res, contactMemberDetail, 200, `Contact member ${userTargetID} of group ${user.id} detail:`, null)
         } else {
             return next(createError(400, 'Your account is not yet active'))
