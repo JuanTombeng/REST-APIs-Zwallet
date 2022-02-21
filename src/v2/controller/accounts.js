@@ -51,6 +51,7 @@ const getTopUpHistory = async (req, res, next) => {
         if (active === 1) {
             const [user] = await userQuery.getUserIdByToken(email, role)
             const result = await accountQuery.getTopUpHistory(user.id)
+            console.log(typeof result[0].updated_at)
             commonHelper.response(res, result, 200, `User ${email} top up history`, null)
         }
     } catch (error) {

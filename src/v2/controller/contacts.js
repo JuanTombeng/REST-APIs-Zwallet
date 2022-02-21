@@ -81,13 +81,14 @@ const getContactList = async (req, res, next) => {
                 limit : limit
             })
             const memberCount = await contactQuery.getCountContactGroup(userHolderId.id)
-            const {total} = memberCount[0]
+            const {total_member} = memberCount[0]
             // await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
+
             commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
-                curretPage : page,
+                currentPage : page,
                 limit : limit,
-                totalData : total,
-                totalPage : Math.ceil(total / limit)
+                totalData : total_member,
+                totalPage : Math.ceil(total_member / limit)
             })
         } else {
             return next(createError(400, 'Your account is not yet active'))
@@ -120,11 +121,14 @@ const deleteContactMember = async (req, res, next) => {
     try {
         const {email, role, active} = req.decoded
         const {id} = req.body
+        console.log(id)
         if (active === 1) {
             const [user] = await userQuery.getUserIdByToken(email, role)
-            const [contactGroupId] = await contactQuery.getContactGroupId(user.id)
+            const [contactGroup] = await contactQuery.getContactGroupIdAndTotal(user.id)
             const [userTarget] = await contactQuery.getContactMemberDetail(id, user.id)
-            const result =  await contactQuery.deleteContactMember(contactGroupId.id, id)
+            const result =  await contactQuery.deleteContactMember(contactGroup.id, id)
+            const remainingMembers = contactGroup.total_member - 1
+            await contactQuery.updateContactGroupTotalMember(contactGroup.id, remainingMembers)
             commonHelper.response(res, result, 200, `contact member ${userTarget.first_name} ${userTarget.last_name} is deleted`, null)
         } else {
             return next(createError(500, 'Your account is not yet active'))
