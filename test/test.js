@@ -4,7 +4,7 @@ const expect = require('chai').expect
 const fs = require('fs')
 chai.use(chaiHttp);
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIxLnp3YWxsZXRAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJhY3RpdmUiOjEsImlhdCI6MTY0NDgwNzQ2NiwiZXhwIjoxNjQ0ODExMDY2LCJpc3MiOiJ6d2FsbGV0In0.Z1jtdQbR-lZYaWP0uKRTWzj7Ry9hnenH_dVakRY7-S4'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIxLnp3YWxsZXRAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJhY3RpdmUiOjEsImlhdCI6MTY0NDgxMDQ2OSwiZXhwIjoxNjQ0ODE0MDY5LCJpc3MiOiJ6d2FsbGV0In0.SgoM-1Miech-1h59PlriSL-q5a6R58GibK0ly8oMfaU'
 
 const baseLoginUnit = (route) => {
     // return chai.request('https://zwallet-app.herokuapp.com/v2/users').post(`/${route}`).send(
@@ -40,7 +40,7 @@ const baseGetWithParamUnit = (route) => {
 const basePostContactMemberUnit = (route) => {
     return chai.request('http://localhost:4000/v2').post(`/${route}`).auth(token, {type : 'bearer'}).send(
         {
-            "phone_number" : 6281213558898
+            "phone_number" : 62821123123123
         }
     )
 }
@@ -70,9 +70,9 @@ const basePostTransactionUnit = (route) => {
 const basePutUserDetailUnit = (route) => {
     return chai.request('http://localhost:4000/v2').put(`/${route}`).auth(token, {type : 'bearer'}).send(
         {
-            "first_name" : "Marin",
-            "last_name" : "Kitagawa",
-            "phone_number" : 6281213558898
+            "first_name" : "Juan",
+            "last_name" : "Tombeng",
+            "phone_number" : 6281213558123
         }
     )
 }
@@ -291,30 +291,30 @@ describe('Get Transactioon History', () => {
     })
 })
 
-// describe('Post Sign Up User', () => {
-//     it('expect to check the res data', (done) => {
-//         baseSignUpUnit('/users/signup').end((err, res) => {
-//             expect(res.body).to.be.an.instanceof(Object)
-//             expect(res.body).to.have.all.keys('status', 'code', 'data', 'message', 'error', 'pagination')
-//             expect(res.body).to.have.property('code').and.equal(200)
-//             expect(res.body).to.have.property('message').and.equal('Please check your email, a verification email has been send to verfity your email')
-//             done()
-//         })
-//     })
-// })
+describe('Post Sign Up User', () => {
+    it('expect to check the res data', (done) => {
+        baseSignUpUnit('/users/signup').end((err, res) => {
+            expect(res.body).to.be.an.instanceof(Object)
+            expect(res.body).to.have.all.keys('status', 'code', 'data', 'message', 'error', 'pagination')
+            expect(res.body).to.have.property('code').and.equal(200)
+            expect(res.body).to.have.property('message').and.equal('Please check your email, a verification email has been send to verfity your email')
+            done()
+        })
+    })
+})
 
-// const tokenSignUp = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIzendhbGxldCIsImVtYWlsIjoidXNlcjMuendhbGxldEBnbWFpbC5jb20iLCJpYXQiOjE2NDQ4MDUzNzUsImV4cCI6MTY0NDgwODk3NSwiaXNzIjoiendhbGxldCJ9.Ii-CxipnU0C9k0AONs2ahJBRM_VevXYJx1xhK1E1xow`
-// describe('Post Sign Up Email Verification', () => {
-//     it('expect to check email token', (done) => {
-//         baseSignUpEmailVerificationUnit(`users/email-verification/${tokenSignUp}`).end((err, res) => {
-//             expect(res.body).to.be.an.instanceof(Object)
-//             expect(res.body).to.have.all.keys('status', 'code', 'data', 'message', 'error', 'pagination')
-//             expect(res.body).to.have.property('code').and.equal(200)
-//             expect(res.body.data.activateUser).to.have.property('affectedRows').and.equal(1)
-//             done()
-//         })
-//     })
-// })
+const tokenSignUp = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIzendhbGxldCIsImVtYWlsIjoidXNlcjMuendhbGxldEBnbWFpbC5jb20iLCJpYXQiOjE2NDQ4MDUzNzUsImV4cCI6MTY0NDgwODk3NSwiaXNzIjoiendhbGxldCJ9.Ii-CxipnU0C9k0AONs2ahJBRM_VevXYJx1xhK1E1xow`
+describe('Post Sign Up Email Verification', () => {
+    it('expect to check email token', (done) => {
+        baseSignUpEmailVerificationUnit(`users/email-verification/${tokenSignUp}`).end((err, res) => {
+            expect(res.body).to.be.an.instanceof(Object)
+            expect(res.body).to.have.all.keys('status', 'code', 'data', 'message', 'error', 'pagination')
+            expect(res.body).to.have.property('code').and.equal(200)
+            expect(res.body.data.activateUser).to.have.property('affectedRows').and.equal(1)
+            done()
+        })
+    })
+})
 
 describe('Post New Contact Member to List', () => {
     it('expect to check the data', (done) => {
@@ -382,7 +382,6 @@ describe('Delete Contact Member From List', () => {
             expect(res.body).to.be.an.instanceof(Object)
             expect(res.body).to.have.all.keys('status', 'code', 'data', 'message', 'error', 'pagination')
             expect(res.body).to.have.property('code').and.equal(200)
-            expect(res.body.data).to.have.property('affectedRows').and.equal(1)
             done()
         })
     })
