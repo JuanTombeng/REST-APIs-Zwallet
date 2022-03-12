@@ -62,8 +62,8 @@ const addContactList = async (req, res, next) => {
             return next(createError(400, 'Your account is not yet active'))
         }
     } catch (error) {
-        console.log(error)
-        next(createError(500, new createError.InternalServerError()))
+        console.log(error.message);
+        next({ status: 500, message: `${error.message}` });
     }
 }
 
@@ -100,8 +100,8 @@ const getContactList = async (req, res, next) => {
             return next(createError(400, 'Your account is not yet active'))
         }
     } catch (error) {
-        console.log(error)
-        next(createError(500, new createError.InternalServerError()))
+        console.log(error.message);
+        next({ status: 500, message: `${error.message}` });
     }
 }
 
@@ -118,8 +118,8 @@ const getContactMemberDetail = async (req, res, next) => {
             return next(createError(400, 'Your account is not yet active'))
         }
     } catch (error) {
-        console.log(error)
-        next(createError(500, new createError.InternalServerError()))
+        console.log(error.message);
+        next({ status: 500, message: `${error.message}` });
     }
 }
 
@@ -139,8 +139,8 @@ const deleteContactMember = async (req, res, next) => {
             return next(createError(500, 'Your account is not yet active'))
         }
     } catch (error) {
-        console.log(error)
-        next(createError(500, new createError.InternalServerError()))
+        console.log(error.message);
+        next({ status: 500, message: `${error.message}` });
     }
 }
 
