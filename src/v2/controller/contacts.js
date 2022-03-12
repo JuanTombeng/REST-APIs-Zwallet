@@ -41,21 +41,22 @@ const addContactList = async (req, res, next) => {
                 const checkIfMemberAlreadyAdded = await contactQuery.getContactMemberExisted(contactMemberId[0].id, contact_group_id)
                 if (checkIfMemberAlreadyAdded.length > 0) {
                     commonHelper.response(res, `The member with ${phone_number} number is already added. Please select a different phone number to add`, 409)
-                }
-                const contactMemberData = {
-                    id : uuidv4(),
-                    contact_groups_id : contact_group_id,
-                    id_user : contactMemberId[0].id
-                }
-                const addContactMember = await contactQuery.addContactMember(contactMemberData)
-                if (addContactMember.affectedRows > 0) {
-                    const totalMember = checkContactGroup[0].total_member + 1
-                    const updateContactGroup = await contactQuery.updateContactGroupTotal(totalMember, contact_group_id)
-                    const results = {
-                        addContactMember,
-                        updateContactGroup
+                } else if (checkIfMemberAlreadyAdded.length === 1) {
+                    const contactMemberData = {
+                        id : uuidv4(),
+                        contact_groups_id : contact_group_id,
+                        id_user : contactMemberId[0].id
                     }
-                    commonHelper.response(res, results, 200, `UserId : ${contactMemberId[0].id} is added to contact group ${contact_group_id}`, null)
+                    const addContactMember = await contactQuery.addContactMember(contactMemberData)
+                    if (addContactMember.affectedRows > 0) {
+                        const totalMember = checkContactGroup[0].total_member + 1
+                        const updateContactGroup = await contactQuery.updateContactGroupTotal(totalMember, contact_group_id)
+                        const results = {
+                            addContactMember,
+                            updateContactGroup
+                        }
+                        commonHelper.response(res, results, 200, `UserId : ${contactMemberId[0].id} is added to contact group ${contact_group_id}`, null)
+                    }
                 }
             }
         } else {
