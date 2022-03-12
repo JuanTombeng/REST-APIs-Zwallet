@@ -87,7 +87,7 @@ const getContactList = async (req, res, next) => {
                 limit : limit
             })
             const memberCount = await contactQuery.getContactGroupIdAndTotal(userHolderId.id)
-            const {total_member} = memberCount[0]
+            const total_member = memberCount[0].total_member
             // await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
 
             commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
