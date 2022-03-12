@@ -87,15 +87,18 @@ const getContactList = async (req, res, next) => {
                 limit : limit
             })
             const memberCount = await contactQuery.getContactGroupIdAndTotal(userHolderId.id)
-            const total_member = memberCount[0].total_member
-            // await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
-
-            commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
-                currentPage : page,
-                limit : limit,
-                totalData : total_member,
-                totalPage : Math.ceil(total_member / limit)
-            })
+            if (memberCount.length > 0) {
+                const total_member = memberCount[0].total_member
+                // await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
+                commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
+                    currentPage : page,
+                    limit : limit,
+                    totalData : total_member,
+                    totalPage : Math.ceil(total_member / limit)
+                })
+            } else {
+                next({ status: 200, message: `You have 0 contact member, please add a contact member first.` });
+            }
         } else {
             return next(createError(400, 'Your account is not yet active'))
         }
