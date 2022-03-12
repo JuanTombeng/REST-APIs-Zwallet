@@ -1,18 +1,7 @@
 const connection = require('../config/dbConfig')
 
-const addContactMember = (data) => {
-    return new Promise ((resolve, reject) => {
-        const sql = `INSERT INTO contact_members SET ?`
-        connection.query(sql, data, (error, result) => {
-            if (!error) {
-                resolve(result)
-            } else {
-                reject(error)
-            }
-        })
-    })
-}
-
+// Contact Group section
+// add new contact group
 const addContactGroup = (data) => {
     return new Promise ((resolve, reject) => {
         const sql = `INSERT INTO contact_groups SET ?`
@@ -26,6 +15,7 @@ const addContactGroup = (data) => {
     })
 }
 
+// check if contact grup is existed
 const findContactGroup = (userId) => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT id, total_member FROM contact_groups WHERE user_holder_id = ?`
@@ -39,6 +29,7 @@ const findContactGroup = (userId) => {
     })
 }
 
+// update contact group total member
 const updateContactGroupTotal = (totalMember, groupId) => {
     return new Promise ((resolve, reject) => {
         const sql = `UPDATE contact_groups SET total_member = ? WHERE id = ?`
@@ -52,6 +43,7 @@ const updateContactGroupTotal = (totalMember, groupId) => {
     })
 }
 
+// get list of member from contact group
 const getContactGroup = ({id, search, sort, order, limit, offset}) => {
     return new Promise ((resolve, reject) => {
         let sql = `SELECT contact_members.id_user, contact_groups.id, contact_groups.user_holder_id, 
@@ -74,10 +66,10 @@ const getContactGroup = ({id, search, sort, order, limit, offset}) => {
     })
 }
 
-const getCountContactGroup = (userHolderId) => {
+const getContactGroupIdAndTotal = (user_holder_id) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT total_member FROM contact_groups WHERE user_holder_id = ?`
-        connection.query(sql, userHolderId, (error, result) => {
+        const sql = `SELECT id, total_member FROM contact_groups WHERE user_holder_id = ?`
+        connection.query(sql, user_holder_id, (error, result) => {
             if (!error) {
                 resolve(result)
             } else {
@@ -87,6 +79,37 @@ const getCountContactGroup = (userHolderId) => {
     })
 }
 
+
+// Contact Member section
+// add new member to contact group
+const addContactMember = (data) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `INSERT INTO contact_members SET ?`
+        connection.query(sql, data, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+//check if member existed in contact group
+const getContactMemberExisted = (id_user, id_contact_group) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT id FROM contact_members WHERE id_user = ? AND contact_groups_id = ?`
+        connection.query(sql, [id_user, id_contact_group], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+// contact member detail after member added
 const getContactMemberDetail = (userTargetId, userHolderId) => {
     return new Promise ((resolve, reject) => {
         const sql = `SELECT users.first_name, users.last_name, users.phone_number, users.profile_picture, users.active, 
@@ -101,6 +124,7 @@ const getContactMemberDetail = (userTargetId, userHolderId) => {
     })
 }
 
+// delete member from contact group
 const deleteContactMember = (contact_groups_id, id_user) => {
     return new Promise ((resolve, reject) => {
         const sql = `DELETE FROM contact_members WHERE contact_groups_id = ? AND id_user = ?`
@@ -114,41 +138,44 @@ const deleteContactMember = (contact_groups_id, id_user) => {
     })
 }
 
-const updateContactGroupTotalMember = (contact_groups_id, total_member) => {
-    return new Promise ((resolve, reject) => {
-        const sql = `UPDATE contact_groups SET total_member = ? WHERE id = ?`
-        connection.query(sql, [total_member, contact_groups_id], (error, result) => {
-            if (!error) {
-                resolve(result)
-            } else {
-                reject(error)
-            }
-        })
-    })
-}
+// const getCountContactGroup = (userHolderId) => {
+//     return new Promise ((resolve, reject) => {
+//         const sql = `SELECT total_member FROM contact_groups WHERE user_holder_id = ?`
+//         connection.query(sql, userHolderId, (error, result) => {
+//             if (!error) {
+//                 resolve(result)
+//             } else {
+//                 reject(error)
+//             }
+//         })
+//     })
+// }
 
-const getContactGroupIdAndTotal = (user_holder_id) => {
-    return new Promise ((resolve, reject) => {
-        const sql = `SELECT id, total_member FROM contact_groups WHERE user_holder_id = ?`
-        connection.query(sql, user_holder_id, (error, result) => {
-            if (!error) {
-                resolve(result)
-            } else {
-                reject(error)
-            }
-        })
-    })
-}
+// const updateContactGroupTotalMember = (contact_groups_id, total_member) => {
+//     return new Promise ((resolve, reject) => {
+//         const sql = `UPDATE contact_groups SET total_member = ? WHERE id = ?`
+//         connection.query(sql, [total_member, contact_groups_id], (error, result) => {
+//             if (!error) {
+//                 resolve(result)
+//             } else {
+//                 reject(error)
+//             }
+//         })
+//     })
+// }
+
+
 
 module.exports = {
-    addContactMember,
     addContactGroup,
     findContactGroup,
     updateContactGroupTotal,
     getContactGroup,
-    getCountContactGroup,
+    getContactGroupIdAndTotal,
+    addContactMember,
+    getContactMemberExisted,
     getContactMemberDetail,
     deleteContactMember,
-    updateContactGroupTotalMember,
-    getContactGroupIdAndTotal
+    // getCountContactGroup,
+    // updateContactGroupTotalMember,
 }

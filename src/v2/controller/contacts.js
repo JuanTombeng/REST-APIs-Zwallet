@@ -38,19 +38,25 @@ const addContactList = async (req, res, next) => {
                 commonHelper.response(res, results, 200, `Group id: ${contact_group_id} is created and userId : {contactMemberId[0].id} is added`, null)
             } else if (checkContactGroup.length !== 0) {
                 const contact_group_id = checkContactGroup[0].id
-                const totalMember = checkContactGroup[0].total_member + 1
+                const checkIfMemberAlreadyAdded = await contactQuery.getContactMemberExisted(contactMemberId[0].id, contact_group_id)
+                if (checkIfMemberAlreadyAdded.length > 0) {
+                    commonHelper.response(res, `The member with ${phone_number} number is already added. Please select a different phone number to add`)
+                }
                 const contactMemberData = {
                     id : uuidv4(),
                     contact_groups_id : contact_group_id,
                     id_user : contactMemberId[0].id
                 }
                 const addContactMember = await contactQuery.addContactMember(contactMemberData)
-                const updateContactGroup = await contactQuery.updateContactGroupTotal(totalMember, contact_group_id)
-                const results = {
-                    addContactMember,
-                    updateContactGroup
+                if (addContactMember.affectedRows > 0) {
+                    const totalMember = checkContactGroup[0].total_member + 1
+                    const updateContactGroup = await contactQuery.updateContactGroupTotal(totalMember, contact_group_id)
+                    const results = {
+                        addContactMember,
+                        updateContactGroup
+                    }
+                    commonHelper.response(res, results, 200, `UserId : ${contactMemberId[0].id} is added to contact group ${contact_group_id}`, null)
                 }
-                commonHelper.response(res, results, 200, `UserId : ${contactMemberId[0].id} is added to contact group ${contact_group_id}`, null)
             }
         } else {
             return next(createError(400, 'Your account is not yet active'))
@@ -80,7 +86,7 @@ const getContactList = async (req, res, next) => {
                 offset : offset,
                 limit : limit
             })
-            const memberCount = await contactQuery.getCountContactGroup(userHolderId.id)
+            const memberCount = await contactQuery.getContactGroupIdAndTotal(userHolderId.id)
             const {total_member} = memberCount[0]
             await client.setEx(`contact-list/${email}`, 60 * 60, JSON.stringify(contactGroupList))
             commonHelper.response(res, contactGroupList, 200, `Contact List of user : ${userHolderId.id}`, null, {
@@ -120,14 +126,13 @@ const deleteContactMember = async (req, res, next) => {
     try {
         const {email, role, active} = req.decoded
         const {id} = req.body
-        console.log(id)
         if (active === 1) {
             const [user] = await userQuery.getUserIdByToken(email, role)
             const [contactGroup] = await contactQuery.getContactGroupIdAndTotal(user.id)
             const [userTarget] = await contactQuery.getContactMemberDetail(id, user.id)
             const result =  await contactQuery.deleteContactMember(contactGroup.id, id)
             const remainingMembers = contactGroup.total_member - 1
-            await contactQuery.updateContactGroupTotalMember(contactGroup.id, remainingMembers)
+            await contactQuery.updateContactGroupTotal(remainingMembers, contactGroup.id)
             commonHelper.response(res, result, 200, `contact member ${userTarget.first_name} ${userTarget.last_name} is deleted`, null)
         } else {
             return next(createError(500, 'Your account is not yet active'))

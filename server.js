@@ -2,9 +2,18 @@ const express = require('express');
 const morgan = require('morgan');
 require('dotenv').config()
 const app = express();
+const http = require('http')
 const PORT = process.env.PORT || 4000;
 const commonHelper = require('./src/v1/helper/common')
 const cors = require('cors')
+
+const server = http.createServer(app)
+const {Server} = require('socket.io')
+const io = new Server({
+    cors : {
+        origin : 'http://localhost:3000'
+    }
+})
 
 const version1 = require('./src/v1/routes')
 const version2 = require('./src/v2/routes')
@@ -30,7 +39,16 @@ app.use((err, req, res, next)=>{
     })
 })
 
+// web socket
+io.on('connection', (socket) => {
+    console.log('a user connected')
+    socket.on('disconnect', () => {
+        console.log('a user disconnected')
+    })
+})
 
-app.listen(PORT, () => {
+io.listen(server)
+
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })
