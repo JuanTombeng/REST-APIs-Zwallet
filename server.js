@@ -4,7 +4,8 @@ require('dotenv').config()
 const app = express();
 const http = require('http')
 const PORT = process.env.PORT || 4000;
-const commonHelper = require('./src/v1/helper/common')
+const commonHelper = require('./src/v2/helper/common')
+const errorHandling = require('./src/v2/helper/errorHandling')
 const cors = require('cors')
 
 const server = http.createServer(app)
@@ -28,16 +29,8 @@ app.use('/file', express.static('./src/uploads'))
 // URL not Found handler
 app.use(commonHelper.handleURLNotFound)
 
-// Error handling
-app.use((err, req, res, next)=>{
-    const statusCode = err.status || 500
-    const message = err.message || 'Internal Server Error'
-    res.status(statusCode)
-    res.json({
-        status: statusCode,
-        message: message
-    })
-})
+// error handling
+app.use(errorHandling);
 
 // web socket
 io.on('connection', (socket) => {
