@@ -5,7 +5,7 @@ const app = express();
 const http = require('http')
 const PORT = process.env.PORT || 4000;
 const commonHelper = require('./src/v2/helper/common')
-const errorHandling = require('./src/v2/helper/errorHandling')
+const {errorHandling} = require('./src/v2/helper/errorHandling')
 const cors = require('cors')
 
 const server = http.createServer(app)
