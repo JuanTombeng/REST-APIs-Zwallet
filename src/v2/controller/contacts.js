@@ -40,7 +40,7 @@ const addContactList = async (req, res, next) => {
                 const contact_group_id = checkContactGroup[0].id
                 const checkIfMemberAlreadyAdded = await contactQuery.getContactMemberExisted(contactMemberId[0].id, contact_group_id)
                 if (checkIfMemberAlreadyAdded.length > 0) {
-                    commonHelper.response(res, `The member with ${phone_number} number is already added. Please select a different phone number to add`)
+                    commonHelper.response(res, `The member with ${phone_number} number is already added. Please select a different phone number to add`, 409)
                 }
                 const contactMemberData = {
                     id : uuidv4(),
@@ -62,6 +62,7 @@ const addContactList = async (req, res, next) => {
             return next(createError(400, 'Your account is not yet active'))
         }
     } catch (error) {
+        console.log(error)
         console.log(error.message);
         next({ status: 500, message: `${error.message}` });
     }
