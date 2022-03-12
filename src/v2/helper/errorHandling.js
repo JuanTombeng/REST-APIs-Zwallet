@@ -1,4 +1,4 @@
-import {response} from './common'
+const {response} = require('./common')
 
 const errorHandling = (err, req, res, next) => {
     const statusCode = err.status
