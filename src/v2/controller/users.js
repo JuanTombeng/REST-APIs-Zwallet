@@ -136,7 +136,7 @@ const uploadProfilePicture = async (req, res, next) => {
         }
     } catch (error) {
         console.log(error)
-        next(createError(500, new createError.InternalServerError()))
+        next({ status: 500, message: `${error.message}`})
     }
 }
 
