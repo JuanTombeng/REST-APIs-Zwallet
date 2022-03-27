@@ -98,7 +98,7 @@ const updateTransaction = async (req, res, next) => {
             const result = await transactionQuery.updateTransaction(transactionId, transactionData)
             commonHelper.response(res, result, 200, `Transaction with ID : ${transactionId} is updated!`)
         } else {
-            res.redirect('https://zwallet-tombeng.netlify.app/login')
+            res.redirect('https://zwallet-tombeng.netlify.app/auth/login')
             return next(createError(400, 'You are not authorized to continue'))
         }
     } catch (error) {

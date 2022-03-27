@@ -71,7 +71,7 @@ const emailTokenVerification = async (req, res, next) => {
         const username = decoded.username
         const email = decoded.email
         const activateUser = await userQuery.updateVerifiedUser(username, email)
-        res.redirect('https://zwallet-tombeng.netlify.app/login')
+        res.redirect('https://zwallet-tombeng.netlify.app/auth/login')
         commonHelper.response(res, activateUser, 200, `User with username ${username} is verified`, null)
     } catch (error) {
         if (error && error.name === `JsonWebTokenError`) {

@@ -88,7 +88,7 @@ const emailTokenVerification = async (req, res, next) => {
         const email = confirmEmail.email
         const result = await userQuery.updateVerifiedUser(username, email)
         console.log(`update user : ${result}`)
-        res.redirect('http://localhost:3000/login')
+        res.redirect('http://localhost:3000/auth/login')
         commonHelper.response(res, result, 200, `User with username ${username} is verified`)
     } catch (error) {
         if (error && error.name === 'JsonWebTokenError') { return next(createError(400, 'Token Invalid')); } else if (error && error.name === 'TokenExpiredError') { return next(createError(400, 'Token Expired')); } else {

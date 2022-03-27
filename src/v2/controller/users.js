@@ -113,7 +113,7 @@ const resetUserPassword = async (req, res, next) => {
             const hashedPassword = await bcrypt.hash(password, salt)
             const result = await userQuery.resetUserPassword(hashedPassword, email, user.id)
             commonHelper.response(res, result, 200, `User ${email} reset password is completed`)
-            res.redirect('https://zwallet-tombeng.netlify.app/login')
+            res.redirect('https://zwallet-tombeng.netlify.app/auth/login')
         } else {
             commonHelper.response(res, `Login Failed`, 500, `Sorry, your accoutn is not yet activated.`)
         }
@@ -186,7 +186,7 @@ const deleteUser = async (req, res, next) => {
             const result = await userQuery.deleteUser(id)
             commonHelper.response(res, result, 200, `User ${id} is deleted`, null)
         } else {
-            res.redirect('https://zwallet-tombeng.netlify.app/login')
+            res.redirect('https://zwallet-tombeng.netlify.app/auth/login')
             return next(createError(400, 'You are not authorized to continue'))
         }
     } catch (error) {
