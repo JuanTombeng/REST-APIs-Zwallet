@@ -14,7 +14,7 @@ const addContactList = async (req, res, next) => {
             const userHolderId = await userQuery.getUserIdByToken(email, role)
             const contactMemberId = await userQuery.getUserIdByPhoneNumber(phone_number)
             if (contactMemberId.length === 0) {
-                return next(createError(500, `User with phone_number : ${phone_number} is not exists`))
+                next({ status: 500, message: `User with phone_number : ${phone_number} is not exists` });
             }
             const checkContactGroup = await contactQuery.findContactGroup(userHolderId[0].id)
             if (checkContactGroup.length === 0) {
@@ -39,9 +39,10 @@ const addContactList = async (req, res, next) => {
             } else if (checkContactGroup.length !== 0) {
                 const contact_group_id = checkContactGroup[0].id
                 const checkIfMemberAlreadyAdded = await contactQuery.getContactMemberExisted(contactMemberId[0].id, contact_group_id)
+                console.log(checkIfMemberAlreadyAdded.length)
                 if (checkIfMemberAlreadyAdded.length > 0) {
                     commonHelper.response(res, `The member with ${phone_number} number is already added. Please select a different phone number to add`, 409)
-                } else if (checkIfMemberAlreadyAdded.length === 1) {
+                } else if (checkIfMemberAlreadyAdded.length === 0) {
                     const contactMemberData = {
                         id : uuidv4(),
                         contact_groups_id : contact_group_id,
