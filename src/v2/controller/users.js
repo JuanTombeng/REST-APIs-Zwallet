@@ -126,7 +126,7 @@ const resetUserPassword = async (req, res, next) => {
 const uploadProfilePicture = async (req, res, next) => {
     try {
         const { email, role, active} = req.decoded
-        const fileName = req.file.filename
+        const fileName = req.file[0].filename
         const profile_picture = `${process.env.BASE_URL}/file/${fileName}`
         if (active === 1) {
             const result = await userQuery.uploadUserProfilePicture(email, role, profile_picture)
