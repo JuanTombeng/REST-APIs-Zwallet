@@ -60,9 +60,8 @@ const createTransaction = async (req, res, next) => {
             return next(createError(400, 'Your account is not yet active'))
         }
     } catch (error) {
-        console.log(error)
-        const err = new createError.InternalServerError()
-        next(err)
+        console.log(error.message);
+        next({ status: 500, message: `${error.message}` });
     }
 }
 
