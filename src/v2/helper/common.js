@@ -229,7 +229,7 @@ const sendEmailResetPasswordVerification = async (emailTarget, token) => {
                         Please do NOT share this to other people! To continue the reset password process, please click the button "Continue" below to verify your email!
                     </div>
                     <div class="confirm">
-                        <a href="http://localhost:3000/reset-password/${token}" target="_blank"><button class="form-button">Continue</button></a>
+                        <a href="https://zwallet-app.vercel.app/auth/reset-password/${token}" target="_blank"><button class="form-button">Continue</button></a>
                     </div>
                 </div>
             </body>

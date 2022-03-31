@@ -406,7 +406,7 @@ const sendEmailVerification = async (emailTarget, token) => {
                                       <table role="presentation" border="0" cellpadding="0" cellspacing="0">
                                         <tbody>
                                           <tr>
-                                            <td> <a href="http://localhost:4000/users/email-verification/${token}" target="_blank">Confirm</a> </td>
+                                            <td> <a href="${process.env.BASE_URL}/users/email-verification/${token}" target="_blank">Confirm</a> </td>
                                           </tr>
                                         </tbody>
                                       </table>
