@@ -20,6 +20,7 @@ const version1 = require('./src/v1/routes')
 const version2 = require('./src/v2/routes')
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'))
 app.use(cors())
 app.use('/v1', version1)
