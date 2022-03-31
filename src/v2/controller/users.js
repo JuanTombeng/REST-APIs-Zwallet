@@ -126,8 +126,9 @@ const resetUserPassword = async (req, res, next) => {
 const uploadProfilePicture = async (req, res, next) => {
     try {
         const { email, role, active} = req.decoded
-        const fileName = req.file.filename
-        const profile_picture = `${process.env.BASE_URL}/file/${fileName}`
+        const picture = req.file.filename
+        console.log(picture)
+        const profile_picture = `${process.env.BASE_URL}/file/${picture}`
         if (active === 1) {
             const result = await userQuery.uploadUserProfilePicture(email, role, profile_picture)
             commonHelper.response(res, result, 200, `User ${email}'s profile picture is updated.`, null)
