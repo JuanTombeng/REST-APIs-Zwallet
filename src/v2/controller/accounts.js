@@ -32,16 +32,16 @@ const topUpAccountBalance = async (req, res, next) => {
                         topUpHistory : topUpHistory
                     }
                     commonHelper.response(res, results, 200, `User ${email} is succesfully adding ${amount} to their account`)
-                } else {
-                    return next(createError(403, 'Top Up process is failed'))
                 }
             } else {
-                return next(createError(403, 'PIN is incorrect'))
+                next({ status: 400, message: `Sorry, Your current PIN is incorrect.`})
             }
+        } else {
+            next({ status: 403, message: `Sorry, your account is not yet activated.`})
         }
     } catch (error) {
-        console.log(error);
-        next(createError(500, new createError.InternalServerError()))
+        console.log(error)
+        next({ status: 500, message: `${error.message}`})
     }
 }
 

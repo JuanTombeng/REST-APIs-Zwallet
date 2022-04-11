@@ -26,6 +26,9 @@ route.post('/email-reset-password-verification/', validator.resetPasswordValidat
 route.get('/details', authenticator.userTokenVerification, userController.getUserDetails)
 route.put('/update', authenticator.userTokenVerification, userController.updateUserDetails)
 route.delete('/delete', authenticator.isAdmin, userController.deleteUser)
+route.put('/new-phone', authenticator.userTokenVerification, userController.updateUserPhoneNumber)
+route.put('/new-password', authenticator.userTokenVerification, userController.changeUserPassword)
+route.put('/new-pin', authenticator.userTokenVerification, userController.changeUserPin)
 
 
 module.exports = route

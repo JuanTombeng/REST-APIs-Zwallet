@@ -185,6 +185,57 @@ const deleteUser = (userId) => {
     })
 }
 
+const getUserPassword = (email, active, role) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `SELECT password FROM users WHERE email = ? AND active = ? AND role = ?`
+        connection.query(sql, [email, active, role], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const changeUserPassword = (newPassword, email, active, role) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET password = ? WHERE email = ? AND active = ? AND role = ?`
+        connection.query(sql, [newPassword, email, active, role], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const changeUserPin = (newPin, email, active, role) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET pin = ? WHERE email = ? AND active = ? AND role = ?`
+        connection.query(sql, [newPin, email, active, role], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
+
+const updateUserPhoneNumber = (phoneNumber, email, active, role) => {
+    return new Promise ((resolve, reject) => {
+        const sql = `UPDATE users SET phone_number = ? WHERE email = ? AND active = ? AND role = ?`
+        connection.query(sql, [phoneNumber, email, active, role], (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            }
+        })
+    })
+}
 
 
 module.exports = {
@@ -201,5 +252,9 @@ module.exports = {
     resetUserPassword,
     getStatusByEmail,
     updateUserDetail,
-    deleteUser
+    deleteUser,
+    getUserPassword,
+    changeUserPassword,
+    changeUserPin,
+    updateUserPhoneNumber
 }
