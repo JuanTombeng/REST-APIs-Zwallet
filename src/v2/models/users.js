@@ -109,7 +109,7 @@ const getUserIdByToken = (email, role) => {
 
 const getUserIdByPhoneNumber = (phone_number) => {
     return new Promise ((resolve, reject) => {
-        const sql = `SELECT id, first_name, last_name, profile_picture FROM users WHERE phone_number = ?`
+        const sql = `SELECT id, first_name, last_name, phone_number, profile_picture FROM users WHERE phone_number = ?`
         connection.query(sql, phone_number, (error, result) => {
             if (!error) {
                 resolve(result)

@@ -51,10 +51,13 @@ const getContactGroup = ({id, search, sort, order, limit, offset}) => {
         FROM contact_members INNER JOIN contact_groups ON contact_members.contact_groups_id = contact_groups.id 
         INNER JOIN users ON contact_members.id_user = users.id `
         if (search) {
+            // sql += `WHERE contact_groups.user_holder_id = ${id} AND users.first_name LIKE '%${search}%' 
+            // ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
             sql += `WHERE contact_groups.user_holder_id = ${id} AND users.first_name LIKE '%${search}%' 
-            ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
+            ORDER BY users.${order} ${sort}`
         } else {
-            sql += `WHERE contact_groups.user_holder_id = '${id}' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
+            // sql += `WHERE contact_groups.user_holder_id = '${id}' ORDER BY users.${order} ${sort} LIMIT ${limit} OFFSET ${offset}`
+            sql += `WHERE contact_groups.user_holder_id = '${id}' ORDER BY users.${order} ${sort}`
         }
         connection.query(sql, (error, result) => {
             if (!error) {

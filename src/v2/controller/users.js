@@ -157,6 +157,22 @@ const getUserDetails = async (req, res, next) => {
     }
 }
 
+const getUserDetailsByPhone = async (req, res, next) => {
+    try {
+        const {email, role, active} = req.decoded
+        const phone_number = req.params.phone_number
+        if (active == 1 && role == 'user') {
+            const result = await userQuery.getUserIdByPhoneNumber(phone_number)
+            commonHelper.response(res, result, 200, `User with phone number ${phone_number}`)
+        } else {
+            next({ status: 400, message: `Your account is not yet active. Please verify your account first`})
+        }
+    } catch (error) {
+        console.log(error)
+        next({ status: 500, message: `${error.message}`})
+    }
+}
+
 const updateUserDetails = async (req, res, next) => {
     try {
         const {email, role, active} = req.decoded
@@ -275,6 +291,7 @@ module.exports = {
     resetUserPassword,
     uploadProfilePicture,
     getUserDetails,
+    getUserDetailsByPhone,
     updateUserDetails,
     deleteUser,
     changeUserPassword,
